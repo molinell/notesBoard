@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Pastebin</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!-- Works with ws-node in this repo -->
+
+<body>
+    <input id="in" type="text" placeholder="Paste here">
+    <p id="out">...</p>
+    <div id="conn_status">Not connected</div>
+    <p id="err" style="color: red;"></p>
+
+    <details>
+        <summary>Settings</summary>
+        <br>
+            <label for="wstoken">WebSocket token</label>
+            <input required id="wst" type="text" placeholder="Enter websocket token" name="wstoken">
+            <br>
+            <label for="wsURL">WebSocket URL</label>
+            <input required id="wsUrl" type="text" placeholder="Enter websocket URL" name="wsURL">
+            <button type="submit" id="btn" onclick="setKey()">Save</button>
+    </details>
+
+    <div id="notes">
+        <ul>
+
+            <li>
+          
+              <a href="#1" id="note1">
+          
+                <h2>Title #1</h2>
+          
+                <p>Text Content #1</p>
+          
+              </a>
+          
+            </li>
+          
+            <li>
+          
+              <a href="#2"  id="note2">
+          
+                <h2>Title #2</h2>
+          
+                <p>Text Content #2</p>
+          
+              </a>
+          
+            </li>
+          
+          </ul>
+          
+    </div>
+
+    <script>
+        //const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+        WS_TOKEN = localStorage.getItem('ws_token') || 'my-secret-token';
+        JWT_TOKEN = localStorage.getItem('jwt_token')
+        console.log(WS_TOKEN);
+
+        function webSocket() {
+            document.querySelector('#conn_status').innerHTML = "Connecting..."
+            console.log("connecting...")
+            // Create a WebSocket connection
+            const socket = new WebSocket("ws://localhost:8080?access_token="+localStorage.getItem("jwt_token")+"&boardId=1"); //`ws://localhost:8080?token=${WS_TOKEN}`
+
+            // Connection established 
+            socket.onopen = function (event) {
+                ///console.log('ON open message:', event.data);
+                //const data = JSON.parse(event.data);
+                console.log('Connected to WebSocket server');
+                //document.querySelector('#conn_status').innerHTML = `${data.connClients} connected`;
+            };
+
+            // Message listener
+            socket.onmessage = function (event) {
+                console.log('Received message:', event.data);
+                const data = JSON.parse(event.data);
+
+                if (data.status == 0) {
+                    document.querySelector('#out').innerHTML = (data.msg == "") ? document.querySelector('#out').innerHTML : data.msg;
+                    document.querySelector('#err').innerHTML = '';
+                    document.querySelector('#conn_status').innerHTML = `${data.connClients} connected`
+                } else {
+                    document.querySelector('#err').innerHTML = data.msg;
+                }
+
+            };
+
+            // Connection closed 
+            socket.onclose = function (event) {
+                console.log('Connection closed');
+                document.querySelector('#conn_status').innerHTML = "Connection closed <button type='button' onClick=webSocket()>Reconnect</button>";
+            };
+
+            document.querySelector('#in').addEventListener('input', (evt) => {
+                socket.send(evt.target.value);
+            });
+
+            document.querySelector("#note1").addEventListener('click', (evt) =>{
+            const note1 = evt.target
+            const n1pos = note1.getBoundingClientRect()
+            blob = new Blob([JSON.stringify({top: n1pos.top, bottom: n1pos.bottom})]), {
+                type: "application/json"
+            }
+            socket.send(blob)
+            //console.log(note1.id)
+            //console.log(n1pos)
+            })
+
+            return socket
+        }
+
+
+        function setKey() {
+            let token = document.querySelector('#wst').value;
+            let url = document.querySelector('#wsUrl').value;
+            localStorage.setItem('ws_token', token);
+            localStorage.setItem('ws_url', url);
+            window.location.reload()
+        }
+       
+
+        webSocket()
+        //closeForm()
+    </script>
+
+</body>
+
+</html>
