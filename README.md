@@ -1,2 +1,1 @@
-# wom-restapi
-REST-api
+# REST api, Ellen & Iris 

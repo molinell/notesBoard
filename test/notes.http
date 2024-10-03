@@ -1,0 +1,44 @@
+@apiURL=http://localhost:8088
+@token={{$dotenv TEMP_TOKEN}}
+
+GET {{apiURL}}/notes
+Authorization: Bearer {{token}}
+
+
+###
+
+POST {{apiURL}}/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "note": "Nya note med JWT"
+}
+
+
+###
+
+PUT {{apiURL}}/notes/66ebdc054a3ee19252871d99
+Content-Type: application/json
+
+{
+    "note": "Köp kaffe"
+}
+
+###
+
+PATCH {{apiURL}}/notes/2
+Content-Type: application/json
+
+{
+    "note": "Svans"
+}
+
+###
+
+DELETE {{apiURL}}/notes/3
+Content-Type: application/json
+
+{
+    "note": "Flingor"
+}
