@@ -20,56 +20,33 @@
     <details>
         <summary>Settings</summary>
         <br>
-            <label for="wstoken">WebSocket token</label>
-            <input required id="wst" type="text" placeholder="Enter websocket token" name="wstoken">
-            <br>
-            <label for="wsURL">WebSocket URL</label>
-            <input required id="wsUrl" type="text" placeholder="Enter websocket URL" name="wsURL">
-            <button type="submit" id="btn" onclick="setKey()">Save</button>
+        <label for="wstoken">WebSocket token</label>
+        <input required id="wst" type="text" placeholder="Enter websocket token" name="wstoken">
+        <br>
+        <label for="wsURL">WebSocket URL</label>
+        <input required id="wsUrl" type="text" placeholder="Enter websocket URL" name="wsURL">
+        <button type="submit" id="btn" onclick="setKey()">Save</button>
     </details>
 
-    <div id="notes">
-        <ul>
+    <div class="note-container">
+        <div id="note1" class="notes" onmousedown="dragElement(this)">
+            <!--<p ondblclick="editNote(this)">Hihi</p>-->
+            <textarea cols="11" rows="6" ondblclick="editNote(this)"></textarea>
+        </div>
 
-            <li>
-          
-              <a href="#1" id="note1">
-          
-                <h2>Title #1</h2>
-          
-                <p>Text Content #1</p>
-          
-              </a>
-          
-            </li>
-          
-            <li>
-          
-              <a href="#2"  id="note2">
-          
-                <h2>Title #2</h2>
-          
-                <p>Text Content #2</p>
-          
-              </a>
-          
-            </li>
-          
-          </ul>
-          
+        <div id="note2" class="notes" onmousedown="dragElement(this)">
+            <p ondblclick="editNote(this)">ojdå</p>
+        </div>
     </div>
-
     <script>
         //const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
-        WS_TOKEN = localStorage.getItem('ws_token') || 'my-secret-token';
         JWT_TOKEN = localStorage.getItem('jwt_token')
-        console.log(WS_TOKEN);
 
         function webSocket() {
             document.querySelector('#conn_status').innerHTML = "Connecting..."
             console.log("connecting...")
             // Create a WebSocket connection
-            const socket = new WebSocket("ws://localhost:8080?access_token="+localStorage.getItem("jwt_token")+"&boardId=1"); //`ws://localhost:8080?token=${WS_TOKEN}`
+            const socket = new WebSocket("ws://localhost:8080?access_token=" + localStorage.getItem("jwt_token") + "&boardId=1"); //`ws://localhost:8080?token=${WS_TOKEN}`
 
             // Connection established 
             socket.onopen = function (event) {
@@ -104,17 +81,6 @@
                 socket.send(evt.target.value);
             });
 
-            document.querySelector("#note1").addEventListener('click', (evt) =>{
-            const note1 = evt.target
-            const n1pos = note1.getBoundingClientRect()
-            blob = new Blob([JSON.stringify({top: n1pos.top, bottom: n1pos.bottom})]), {
-                type: "application/json"
-            }
-            socket.send(blob)
-            //console.log(note1.id)
-            //console.log(n1pos)
-            })
-
             return socket
         }
 
@@ -126,10 +92,60 @@
             localStorage.setItem('ws_url', url);
             window.location.reload()
         }
-       
 
+        //flytta på element (source: w3schools tutorial)
+        function dragElement(elem) {
+            var diffX = 0, diffY = 0, mouseOrigX = 0, mouseOrigY = 0;
+            elem.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                console.log("func dragMouseDown")
+                e = e || window.event;
+                e.preventDefault();
+                
+                //musposition när man först trycker på noten
+                mouseOrigX = e.clientX;
+                mouseOrigY = e.clientY;
+                
+                //musläpp --> sluta
+                document.onmouseup = closeDragElement;
+
+                //Musflytt --> flytta på elementet
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(evt) {
+                console.log("func elementDrag")
+                evt = evt || window.event;
+                evt.preventDefault();
+               
+                //räkna skillnaden mellan föregående och nuvarande musposition
+                diffX = mouseOrigX - evt.clientX;
+                diffY = mouseOrigY - evt.clientY;
+                mouseOrigX = evt.clientX;
+                mouseOrigY = evt.clientY;
+
+                //räkna nya positionen till elementet
+                elem.style.top = (elem.offsetTop - diffY) + "px";
+                elem.style.left = (elem.offsetLeft - diffX) + "px";
+
+                //sicka härifrån note positionen till ws
+            }
+
+            function closeDragElement() {
+                //sluta allt när musen släpps
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        function editNote(elem){
+            console.log("double click")
+            elem.contentEditable = true
+            elem.focus()
+        }
+        
         webSocket()
-        //closeForm()
     </script>
 
 </body>

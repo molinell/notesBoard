@@ -10,67 +10,48 @@ body {
   
   }
   
-  *{
-  
-    margin:0;
-  
-    padding:0;
-  
+
+  div[id^="note"] {
+    position: absolute;
+    z-index: 9;
+    background-color: #f1f1f1;
+    text-align: center;
+    border: 1px solid #d3d3d3;
+    color: darkslategrey;
+    cursor: move;
+    width: 100px;
+    height: 100px;
+    align-content: center;
+    align-items: center;
   }
-  
-  h2 {
-  
-    font-weight: bold;
-  
-    font-size: 2rem;
-  
+
+  .note-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust 100px for desired column width */
+    gap: 10px; /* Space between the grid items */
   }
-  
+
+  #note2 {
+    top: 200px;
+    left: 800px;
+  }
+
+  #note1{
+    top: 200px;
+    left: 500px;
+  }
+
+  textarea{
+    background: none;
+    border: none;
+    resize: none;
+    scroll-behavior: none;
+  }
+
   p {
-  
-    font-size: 1rem;
-  
-    font-weight: normal;
-  
-  }
-  
-  ul,li{
-  
-    list-style:none;
-  
-  }
-  
-  ul{
-  
-    display: flex;
-  
-    flex-wrap: wrap;
-  
-    justify-content: center;
-  
-  }
-  
-  ul li a{
-  
-    text-decoration:none;
-  
-    color:#000;
-  
-    background:#ffc;
-  
-    display:block;
-  
-    height:10em;
-  
-    width:10em;
-  
-    padding:1em;
-  
-  }
-  
-  ul li{
-  
-    margin:1em;
-  
+    cursor: text;
+    max-width: 90px;
+    max-height: 90px;
+    text-wrap: wrap;
   }
   
