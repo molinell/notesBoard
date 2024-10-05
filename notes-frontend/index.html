@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../notes-frontend/style.css">
     <title>Notes</title>
 </head>
 <body>
@@ -12,83 +13,9 @@
 
     <div id="notes-container"></div> 
 
-    <script>
-        const API_URL = "http://localhost:8088";
-        //let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NmZlM2MzMTU2OWIyNDI0MWVmZDZmYTgiLCJlbWFpbCI6InZhbkhlcnBlbkBzaXRlLmNvbSIsIm5hbWUiOiJJcmlzIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3Mjc5NDI2ODksImV4cCI6MTczMDUzNDY4OX0.WM56srt_rurZme3aX6rJrsH6nTci3UgWm8l1FXyTCXA";
-        // HUR SPARA TOKEN I EN VARIABEL`??? 
+    
+    <script src="functionality.js"></script>
 
-
-        async function logIn(user, pass){
-            console.log("you are " + user + " with a pass: " + pass)
-
-            const resp = await fetch (`${API_URL}/users/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json"},
-                body: JSON.stringify({
-                    "email": user,
-                    "password": pass   
-                })
-            });
-            
-            // Sparar JSON objektet i en variabel och printar i konsolen 
-            const respData = await resp.json();
-            console.log(respData); 
-
-            if (respData.token) {
-            token = respData.token; // Save the JWT token
-            //console.log("Login successful, token:", token);
-            fetchNotes();
-            } else {
-                console.log("Login failed:", respData.msg);
-            }
-        }
-        
-        
-        async function fetchNotes(token) {
-            if (!token) {
-                console.error("No token found. Please log in first.");
-                return;
-            }
-
-            const notesResp = await fetch(`${API_URL}/notes`, { //samma som i test.http
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`, // Pass the token in the Authorization header
-                    "Content-Type": "application/json"
-                }
-            });
-
-            const notesData = await notesResp.json();
-            console.log("Fetched notes:", notesData);
-
-            // Check if the response contains the notes
-            if (notesData && notesData.notes) {
-                console.log("User's notes:", notesData.notes);
-                displayNotes(notesData.notes); // Call function to display notes
-            } else {
-                console.log("You have 0 notes, create one!");
-            }
-        }
-
-        function displayNotes(notes) {
-            const notesContainer = document.querySelector('#notes-container');
-            notesContainer.innerHTML = ''; // Clear previous notes
-
-            notes.forEach(note => {
-                const noteElement = document.createElement('div');
-                noteElement.innerHTML = `<p>${note.note}</p>`;
-                notesContainer.appendChild(noteElement);
-            });
-        }
-
-        document.querySelector('#button-login').addEventListener('click', () =>{
-            const user = document.querySelector('#username').value;
-            const pass = document.querySelector('#password').value;
-            logIn(user, pass);
-
-            // SPARA OCKSÅ I LOCALSTORAGE
-        });
-    </script>
 
 </body>
 </html>

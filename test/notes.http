@@ -12,7 +12,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "note": "Nya note med JWT"
+    "note": "Nya note hejehjej"
 }
 
 
