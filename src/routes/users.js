@@ -27,7 +27,7 @@ router.get('/profile', authorize, async (req,res) => {
     }   
 })
 
-router.post('/', async (req, res) => {
+router.post('/register', async (req, res) => {
     console.log(req.body)
     // https://www.npmjs.com/package/bcrypt    password,      salt-rounds 10
     const hashedPassword = await bcrypt.hash(req.body.password, 10)

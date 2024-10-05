@@ -7,6 +7,35 @@ document.querySelector('#button-login').addEventListener('click', () =>{
     logIn(user, pass);
 });
 
+document.querySelector('#button-register').addEventListener('click', () =>{
+    const username = document.querySelector('#username-reg').value;
+    const password = document.querySelector('#password-reg').value;
+    const email = document.querySelector('#email-reg').value;
+    registerUser(username, password, email);
+});
+
+async function registerUser(username, password, email){
+   const role = "user"
+    try {
+        // Hur göra med role, user? 
+        const resp = await fetch(`${API_URL}/users/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "name": username,
+                "email": email,
+                "role": role,
+                "password": password
+            })
+        })
+        console.log("New user created!")
+
+        
+    } catch (error) {
+        console.error("Error occurred during registration:", error);
+    }
+}
+
 
 async function logIn(user, pass){
     console.log("you are " + user + " with a pass: " + pass)

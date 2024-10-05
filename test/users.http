@@ -17,12 +17,12 @@ Content-Type: application/json
 }
 
 ###
-POST {{apiURL}}/users/
+POST {{apiURL}}/users/register
 Content-Type: application/json
 
 {
     "name": "Iris",
-    "email": "vanHerpen@site.com",
+    "email": "vanHerpen@hotmail.com",
     "role": "user",
     "password": "Password12388"
 }
