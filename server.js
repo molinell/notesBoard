@@ -50,6 +50,7 @@ wss.on('connection', (ws, req) => {
         client.send(JSON.stringify({
             msg: "",
             status: 0,
+            event: "Connection",
             connClients: clients[1].size
          }));
         })
@@ -58,18 +59,15 @@ wss.on('connection', (ws, req) => {
     ws.on('message', (message) => {
         //const strMsg = String(message)
         //console.log('Received message:', strMsg);
-        const jsonMsg = JSON.stringify(message)
-        const strMsg = "Note position: " + String(jsonMsg.top) + " " + String(jsonMsg.bottom)
+        data = JSON.parse(message)
+        data.status = 0
+        jsonData = JSON.stringify(data)
 
         // Send a response back to the client along with some other info
         clients[1].forEach(client => {
-            //if(client == ws) return //sickar inte tillbaka till samma client
+            if(client == ws && data.event != "Connection") return //sickar inte tillbaka till samma client
 
-            client.send(JSON.stringify({
-                status: 0,
-                msg: strMsg,
-                connClients: clients.size
-            }));
+            client.send(jsonData)
         })
        
     });
