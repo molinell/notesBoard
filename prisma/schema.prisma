@@ -14,6 +14,8 @@ model Notes {
   note      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  boardId   String   @db.ObjectId // Add the boardId field to establish the relation with Boards
+  board     Boards   @relation(fields: [boardId], references: [id])
 }
 
 model User {
@@ -26,4 +28,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Notes     Notes[]
+  Boards    Boards[]
+}
+
+model Boards {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String   @unique
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  notes     Notes[]
 }

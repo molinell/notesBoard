@@ -1,10 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const authorize = require('../middleware/auth')
-
 const{ PrismaClient } = require('@prisma/client')
-
 const prisma = new PrismaClient() //instansierar objekt med new 
+
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -74,6 +73,7 @@ router.post('/login', async (req, res) => {
     }, process.env.JWT_SECRET, { expiresIn: '30d'})
 
     res.send({msg: "Login ok", jwt: token})
+    res.redirect('users/profile')
 
 
 })

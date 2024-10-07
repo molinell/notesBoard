@@ -16,6 +16,7 @@ document.querySelector('#button-register').addEventListener('click', () =>{
 
 async function registerUser(username, password, email){
    const role = "user"
+   // Boards? 
     try {
         // Hur göra med role, user? 
         const resp = await fetch(`${API_URL}/users/register`, {
@@ -59,7 +60,8 @@ async function logIn(user, pass){
             const token = respData.jwt;
             console.log("Login successful, token:", token);
             // Getch notes right away as the user logs in 
-            fetchNotes(token);
+            //fetchNotes(token);
+            //respData.redirect('/users/profile')
 
         } else {
             console.log("Login failed:", respData.msg);
@@ -68,6 +70,10 @@ async function logIn(user, pass){
         console.error("Error occurred during login:", error);
     }
 }
+
+// LAGA EN CREATE NOTES
+
+// en knapp för new note
 
 
 // Function for getting the notes 

@@ -35,7 +35,7 @@ app.use('/notes', notesRouter)
 const usersRouter = require('./routes/users')
 app.use('/users', usersRouter) 
 
-const usersRouter = require('./routes/boards')
+const boardsRouter = require('./routes/boards')
 app.use('/boards', boardsRouter)
 
 app.listen(PORT, () => { 
