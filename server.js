@@ -29,7 +29,7 @@ wss.on('connection', (ws, req) => {
     if(status == 1){
         ws.send(JSON.stringify({
             status: 1,
-            msg: 'ERROR: Invalid JWT token.'
+            msg: 'ERROR: Unauthorised.'
         }));
         ws.close();
     }
@@ -38,6 +38,8 @@ wss.on('connection', (ws, req) => {
     const boardId = urlParams.get('boardId')
     parseInt(boardId)
 
+    console.log("On board " + boardId)
+
     if(clients[boardId] == null) {
         clients[boardId] = new Set()
         clients[boardId].add(ws)
@@ -45,26 +47,25 @@ wss.on('connection', (ws, req) => {
 
     if(!clients[boardId].has(ws)) clients[boardId].add(ws)
 
-    clients[1].forEach(client => {
+    clients[boardId].forEach(client => {
 
         client.send(JSON.stringify({
             msg: "",
             status: 0,
             event: "Connection",
-            connClients: clients[1].size
+            connClients: clients[boardId].size
          }));
         })
     console.log(`Client count: ${clients.size}`)
 
     ws.on('message', (message) => {
-        //const strMsg = String(message)
-        //console.log('Received message:', strMsg);
+        
         data = JSON.parse(message)
         data.status = 0
         jsonData = JSON.stringify(data)
 
         // Send a response back to the client along with some other info
-        clients[1].forEach(client => {
+        clients[boardId].forEach(client => {
             if(client == ws && data.event != "Connection") return //sickar inte tillbaka till samma client
 
             client.send(jsonData)
@@ -79,7 +80,7 @@ wss.on('connection', (ws, req) => {
         }
         }*/
 
-            clients[1].delete(ws)
+            clients[boardId].delete(ws)
         
         console.log('Client disconnected');
     });

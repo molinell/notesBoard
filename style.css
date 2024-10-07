@@ -4,48 +4,35 @@ body {
   
     font-family: 'Lato';
   
-    background:#666;
+    background:#282828;
   
     color:#fff;
   
   }
   
-
-  /*div[id^="note"] {
-    position: absolute;
-    z-index: 9;
-    background-color: #f1f1f1;
-    text-align: center;
-    border: 1px solid #d3d3d3;
-    color: darkslategrey;
-    cursor: move;
-    width: 100px;
-    height: 100px;
-    align-content: center;
-    align-items: center;
-  }*/
+/*Ta bort dethär*/
+  div[id^="note"] {
+    background-color: aliceblue;
+  }
 
   .notes{
     position: absolute;
     z-index: 9;
-    background-color: #f1f1f1;
     text-align: center;
-    border: 1px solid #d3d3d3;
     color: darkslategrey;
     cursor: move;
-    width: 100px;
-    height: 100px;
-    align-content: center;
-    align-items: center;
+    width: 250px;
+    height: 250px;
     overflow: hidden;
   }
 
-  .note-container {
+  /*.note-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust 100px for desired column width */
-    gap: 10px; /* Space between the grid items */
-  }
+    /*gap: 10px; /* Space between the grid items */
+  /*}*/
 
+  /*Ta bort dethär*/
   #note2 {
     top: 200px;
     left: 800px;
@@ -61,6 +48,9 @@ body {
     height: 100%;*/
     position: fixed;
 
+    height: 90px;
+    width: 90px;
+
     max-width: 90px;
     max-height: 90px;
 
@@ -70,5 +60,16 @@ body {
 
     overflow: hidden;
     word-wrap: break-word;
+
+    cursor: text;
+  }
+
+  .rm-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding-top: 10px;
+    margin-right: -210px;
+    font-size: 20px;
   }
   

@@ -1,5 +1,5 @@
 import { webSocket } from './websocket.js'
-import { Events } from './utils.js';
+import { Events , NoteColors} from './utils.js';
 
 const socket = webSocket()
 
@@ -39,12 +39,12 @@ function dragElement(elem) {
         elem.style.left = (elem.offsetLeft - diffX) + "px";
 
         //sicka härifrån note positionen till ws
-        /*socket.send(JSON.stringify({
+        socket.send(JSON.stringify({
             event: Events.Move,
             elemId: elem.id,
             top: elem.style.top,
             left: elem.style.left
-        }))*/
+        }))
     }
 
     function closeDragElement() {
@@ -61,11 +61,11 @@ function editNote(elem) {
     //console.log(elem.id)
     elem.addEventListener('input', (evt) => {
         console.log(elem.innerText)
-        /*socket.send(JSON.stringify({
+        socket.send(JSON.stringify({
             event: Events.Content,
             elemId: elem.id,
             value: elem.innerText
-        }));*/
+        }));
     });
 }
 
@@ -75,23 +75,25 @@ function addNote() {
     var noteCount = 3
     document.querySelector(".note-container").innerHTML += `
     <div id="note${noteCount}" class="notes" onmousedown="dragElement(this)">
-            <button type="button" class="rm-btn">X</button>
+            <button type="button" class="rm-btn">✕</button>
             <div id="content${noteCount}" class="note-content"></div>
         </div>`
 
     const newNote = document.querySelector(`#note${noteCount}`)
 
-    console.log("added note " +newNote.id)
+    console.log("added note " + newNote.id)
 
     newNote.style.top = '50%'
     newNote.style.left = '50%'
     newNote.style.transform = 'translate(50%, 50%)'
-
-    /*socket.send(JSON.stringify({
+    const noteColor = NoteColors[Math.floor(Math.random() * NoteColors.length)]
+    newNote.style.background = noteColor
+    socket.send(JSON.stringify({
         event: Events.Add,
         elemId: newNote.id,
-        noteCount: noteCount
-    }))*/
+        noteCount: noteCount,
+        noteColor: noteColor
+    }))
 
     editNote(document.querySelector(`#content${noteCount}`))
 }
@@ -102,10 +104,10 @@ function removeNote(elem) {
     console.log("remove note " + noteId)
     note.remove()
 
-    /*socket.send(JSON.stringify({
+    socket.send(JSON.stringify({
         event: Events.Remove,
         elemId: noteId,
-    }));*/
+    }));
 }
 
 export { dragElement, addNote, editNote, removeNote }

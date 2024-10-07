@@ -9,4 +9,14 @@ const Events = Object.freeze({
     Remove: "Remove"
 })
 
-export { Events }
+const NoteColors = [
+    "#b4d9ff",
+    "#e9bff5",
+    "#f5bfbf",
+    "#b9dfb1",
+    "#ffcd87",
+    "#d5d1ff",
+    "#9fd2ca"
+]
+
+export { Events, NoteColors }

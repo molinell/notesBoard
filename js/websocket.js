@@ -32,27 +32,36 @@ function webSocket() {
                 }
 
                 case Events.Move: {
-                    elem = document.querySelector(`#${data.elemId}`)
+                    const elem = document.querySelector(`#${data.elemId}`)
                     elem.style.top = data.top
                     elem.style.left = data.left
                     break
                 }
 
                 case Events.Content: {
-                    elem = document.querySelector(`#${data.elemId}`)
+                    const elem = document.querySelector(`#${data.elemId}`)
                     elem.innerText = data.value
                     break
                 }
 
                 case Events.Add: {
                     document.querySelector(".note-container").innerHTML += `<div id="${data.elemId}" class="notes" onmousedown="dragElement(this)">
-                            <p id="content${data.noteCount}" ondblclick="editNote(this)"></p> </div>`
+                    <button type="button" class="rm-btn">✕</button>
+                    <div id="content${data.noteCount}" class="note-content"></div>
+                    </div>`
 
-                    newNote = document.querySelector(`#${data.elemId}`)
+                    const newNote = document.querySelector(`#${data.elemId}`)
 
                     newNote.style.top = '50%'
                     newNote.style.left = '50%'
-                    newNote.style.transform = newNote.style.translate('50%', '50%')
+                    newNote.style.transform = 'translate(50%, 50%)'
+                    newNote.style.background = data.noteColor
+                    console.log("Added new note")
+                    break
+                }
+
+                case Events.Remove: {
+                    document.querySelector(`#${data.elemId}`).remove()
                 }
 
                 default:
