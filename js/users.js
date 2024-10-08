@@ -128,3 +128,5 @@ function displayNoBoardsMessage() {
     const boardsContainer = document.getElementById("boards-container");
     boardsContainer.innerHTML = "<p>You have no boards. Create a board to get started!</p>";
 }
+
+export { registerUser, logIn }

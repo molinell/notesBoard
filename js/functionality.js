@@ -1,7 +1,9 @@
 import { webSocket } from './websocket.js'
 import { Events, NoteColors } from './utils.js';
 
-let socket
+const API_URL = "http://localhost:8088";
+
+let SOCKET
 
 //flytta på element (source: w3schools tutorial)
 function dragElement(elem) {
@@ -39,7 +41,7 @@ function dragElement(elem) {
         elem.style.left = (elem.offsetLeft - diffX) + "px";
 
         //sicka härifrån note positionen till ws
-        socket.send(JSON.stringify({
+        SOCKET.send(JSON.stringify({
             event: Events.Move,
             elemId: elem.id,
             top: elem.style.top,
@@ -61,7 +63,7 @@ function editNote(elem) {
     //console.log(elem.id)
     elem.addEventListener('input', (evt) => {
         console.log(elem.innerText)
-        socket.send(JSON.stringify({
+        SOCKET.send(JSON.stringify({
             event: Events.Content,
             elemId: elem.id,
             value: elem.innerText
@@ -88,7 +90,7 @@ function addNote() {
     newNote.style.transform = 'translate(50%, 50%)'
     const noteColor = NoteColors[Math.floor(Math.random() * NoteColors.length)]
     newNote.style.background = noteColor
-    socket.send(JSON.stringify({
+    SOCKET.send(JSON.stringify({
         event: Events.Add,
         elemId: newNote.id,
         noteCount: noteCount,
@@ -170,7 +172,7 @@ function removeNote(elem) {
     console.log("remove note " + noteId)
     note.remove()
 
-    socket.send(JSON.stringify({
+    SOCKET.send(JSON.stringify({
         event: Events.Remove,
         elemId: noteId,
     }));
@@ -178,8 +180,8 @@ function removeNote(elem) {
 
 
 function connectWS() {
-    socket = webSocket()
+    SOCKET = webSocket()
 }
 connectWS()
 
-export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, }
+export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes }

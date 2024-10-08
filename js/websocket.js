@@ -19,6 +19,8 @@ function webSocket() {
         const data = JSON.parse(event.data);
 
         if (data.status == 0) {
+            
+            document.querySelector('#err').innerHTML = '';
 
             switch (data.event) {
                 case Events.Connection: {
