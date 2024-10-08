@@ -98,8 +98,6 @@ function addNote() {
     editNote(document.querySelector(`#content${noteCount}`))
 }
 
-
-
 // Function to fetch and display notes for a specific board
 async function fetchNotesForBoard(boardId) {
     try {
@@ -132,12 +130,11 @@ async function fetchNotesForBoard(boardId) {
 function displayNotes(notes) {
     // Display in separate divs 
     const notesContainer = document.querySelector('#notes-container');
-    notesContainer.innerHTML = ''; // Clear previous notes
+    notesContainer.innerHTML = ''; 
 
     notes.forEach(note => {
         const noteElement = document.createElement('div');
         noteElement.id = `note-${note.id}`; // Unique id for each note 
-
 
         noteElement.innerHTML =
             `<div id=outerwrap>
@@ -166,9 +163,6 @@ function displayNotes(notes) {
         notesContainer.appendChild(noteElement);
     });
 }
-
-
-
 
 function removeNote(elem) {
     var note = elem.parentElement

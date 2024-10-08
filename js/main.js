@@ -17,5 +17,18 @@ document.addEventListener('dblclick', (evt) => {
     if(evt.target.classList == 'note-content') editNote(evt.target)
 })
 
+document.querySelector('#button-login').addEventListener('click', () =>{
+    const user = document.querySelector('#username').value;
+    const pass = document.querySelector('#password').value;
+    logIn(user, pass);
+});
+
+document.querySelector('#button-register').addEventListener('click', () =>{
+    const username = document.querySelector('#username-reg').value;
+    const password = document.querySelector('#password-reg').value;
+    const email = document.querySelector('#email-reg').value;
+    registerUser(username, password, email);
+});
+
 
 

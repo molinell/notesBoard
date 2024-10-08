@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:8088";
 
+//Knapparna är här nu då de ej funkar om satta in i main.js
 document.querySelector('#button-login').addEventListener('click', () =>{
     const user = document.querySelector('#username').value;
     const pass = document.querySelector('#password').value;
@@ -15,7 +16,8 @@ document.querySelector('#button-register').addEventListener('click', () =>{
 
 async function registerUser(username, password, email){
    const role = "user"
-   // Boards? 
+   // token skapas endast vid inloggning! Så, registrera först, sedan
+   // logga in för att nå till sin profil
     try {
         // Hur göra med role, user? 
         const resp = await fetch(`${API_URL}/users/register`, {
@@ -58,8 +60,6 @@ async function logIn(user, pass){
         if (token) {
             const token = respData.jwt;
             console.log("Login successful, token:", token);
-            // Getch notes right away as the user logs in 
-            //fetchNotes(token);
             fetchBoards(token);
             //respData.redirect('/users/profile')
 
@@ -72,7 +72,7 @@ async function logIn(user, pass){
 }
 
 async function fetchBoards(token) {
-    const boardsResp = await fetch(`${API_URL}/boards`, { //samma som i test.http
+    const boardsResp = await fetch(`${API_URL}/boards`, { 
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -95,8 +95,6 @@ async function fetchBoards(token) {
 
 function displayBoards(boards) {
     const boardscontainer = document.getElementById("boards-container");
-
-    // Clear any existing content
     boardscontainer.innerHTML = "";
 
     // Loop through each board and create HTML elements to display them
@@ -114,7 +112,6 @@ function displayBoards(boards) {
         boardElement.classList.add("board-item");
         boardElement.textContent = `Board Title: ${board.title}`; // Assuming the board has a title field
 
-        // Optionally, add a button or link to view notes within each board
         const viewNotesButton = document.createElement("button");
         viewNotesButton.textContent = "View Notes";
         viewNotesButton.addEventListener("click", () => {
