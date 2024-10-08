@@ -3,10 +3,6 @@ import { Events , NoteColors} from './utils.js';
 
 let socket
 
-function connectWS(){
-    socket = webSocket()
-}
-
 //flytta på element (source: w3schools tutorial)
 function dragElement(elem) {
     var diffX = 0, diffY = 0, mouseOrigX = 0, mouseOrigY = 0;
@@ -113,5 +109,10 @@ function removeNote(elem) {
         elemId: noteId,
     }));
 }
+
+function connectWS(){
+    socket = webSocket()
+}
+connectWS()
 
 export { dragElement, addNote, editNote, removeNote, connectWS }

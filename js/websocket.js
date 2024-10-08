@@ -10,10 +10,7 @@ function webSocket() {
 
     // Connection established 
     socket.onopen = function (event) {
-        ///console.log('ON open message:', event.data);
-        //const data = JSON.parse(event.data);
         console.log('Connected to WebSocket server');
-        //document.querySelector('#conn_status').innerHTML = `${data.connClients} connected`;
     };
 
     // Message listener
@@ -22,8 +19,6 @@ function webSocket() {
         const data = JSON.parse(event.data);
 
         if (data.status == 0) {
-            //document.querySelector('#out').innerHTML = (data.msg == "") ? document.querySelector('#out').innerHTML : data.msg;
-            //document.querySelector('#err').innerHTML = '';
 
             switch (data.event) {
                 case Events.Connection: {
@@ -78,10 +73,6 @@ function webSocket() {
         console.log('Connection closed');
         document.querySelector('#conn_status').innerHTML = "Connection closed <button type='button' id='reconn-btn'>Reconnect</button>";
     };
-
-    document.querySelector('#in').addEventListener('input', (evt) => {
-        socket.send(evt.target.value);
-    });
 
     return socket
 }

@@ -1,7 +1,6 @@
 import { dragElement, addNote, editNote, removeNote, connectWS } from './functionality.js'
 
 window.dragElement = dragElement //enklast såhär, att göra till global
-connectWS()
 
 document.addEventListener('click', (evt) => {
     if(evt.target.classList == 'rm-btn') removeNote(evt.target)
