@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:8088";
 
 //Knapparna är här nu då de ej funkar om satta in i main.js
-document.querySelector('#button-login').addEventListener('click', () =>{
+/*document.querySelector('#button-login').addEventListener('click', () =>{
     const user = document.querySelector('#username').value;
     const pass = document.querySelector('#password').value;
     logIn(user, pass);
@@ -12,7 +12,7 @@ document.querySelector('#button-register').addEventListener('click', () =>{
     const password = document.querySelector('#password-reg').value;
     const email = document.querySelector('#email-reg').value;
     registerUser(username, password, email);
-});
+});*/
 
 async function registerUser(username, password, email){
    const role = "user"
