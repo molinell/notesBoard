@@ -76,7 +76,7 @@ function webSocket() {
     // Connection closed 
     socket.onclose = function (event) {
         console.log('Connection closed');
-        document.querySelector('#conn_status').innerHTML = "Connection closed <button type='button' onClick=webSocket()>Reconnect</button>";
+        document.querySelector('#conn_status').innerHTML = "Connection closed <button type='button' id='reconn-btn'>Reconnect</button>";
     };
 
     document.querySelector('#in').addEventListener('input', (evt) => {
