@@ -63,7 +63,7 @@ function webSocket() {
                     break
             }
         } else {
-            document.querySelector('#conn_status').innerHTML = data.msg;
+            document.querySelector('#err').innerHTML = `<h3>${data.msg}</h3>`;
         }
 
     };
