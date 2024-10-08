@@ -12,11 +12,14 @@ function authorise(urlParams) {
     try{
         const token = urlParams.get('access_token')
         const userData = jwt.verify(token, process.env.JWT_SECRET)
+        const boardId = parseInt(urlParams.get('boardId'))
+        
+        if(!Object.values(userData.boards).includes(boardId)) throw new Error("Unauthorised for board")
         console.log(`Token authorised for user ${userData.sub} ${userData.name}`)
-        //userData = userData
 
-        return {status: 0, userData: userData}
+        return {status: 0, boardId: boardId, userData: userData}
     } catch(err) {
+        console.log(err)
         return {status: 1, userData: null}
     }
 }
@@ -25,7 +28,7 @@ function authorise(urlParams) {
 wss.on('connection', (ws, req) => {
 
     const urlParams = new URLSearchParams(req.url.slice(1));
-    const {status, userData} = authorise(urlParams)
+    const {status, boardId, userData} = authorise(urlParams)
     if(status == 1){
         ws.send(JSON.stringify({
             status: 1,
@@ -33,10 +36,6 @@ wss.on('connection', (ws, req) => {
         }));
         ws.close();
     }
-    console.log('Client connected: ' + req.headers['sec-websocket-key']);
-
-    const boardId = urlParams.get('boardId')
-    parseInt(boardId)
 
     console.log("On board " + boardId)
 
@@ -56,7 +55,7 @@ wss.on('connection', (ws, req) => {
             connClients: clients[boardId].size
          }));
         })
-    console.log(`Client count: ${clients.size}`)
+    //console.log(`Client count: ${clients.size}`)
 
     ws.on('message', (message) => {
         
