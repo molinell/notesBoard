@@ -1,5 +1,5 @@
 import { webSocket } from './websocket.js'
-import { Events , NoteColors} from './utils.js';
+import { Events, NoteColors } from './utils.js';
 
 let socket
 
@@ -98,6 +98,78 @@ function addNote() {
     editNote(document.querySelector(`#content${noteCount}`))
 }
 
+
+
+// Function to fetch and display notes for a specific board
+async function fetchNotesForBoard(boardId) {
+    try {
+        token = localStorage.getItem('token');
+
+        const notesResp = await fetch(`${API_URL}/boards/${boardId}/notes`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!notesResp.ok) {
+            console.error("Failed to fetch notes:", notesResp.statusText);
+            return;
+        }
+
+        const notesData = await notesResp.json();
+        console.log("Fetched notes for board:", notesData);
+
+        // Call a function to display the notes (similar to displayBoards)
+        displayNotes(notesData.notes);
+    } catch (error) {
+        console.error("Error fetching notes:", error);
+    }
+}
+
+// Display notes in index.html
+function displayNotes(notes) {
+    // Display in separate divs 
+    const notesContainer = document.querySelector('#notes-container');
+    notesContainer.innerHTML = ''; // Clear previous notes
+
+    notes.forEach(note => {
+        const noteElement = document.createElement('div');
+        noteElement.id = `note-${note.id}`; // Unique id for each note 
+
+
+        noteElement.innerHTML =
+            `<div id=outerwrap>
+            <div id=innerwrap>
+                 <div id="button-wrap">
+                    <button class="color-btn" data-color="red">❤️</button>
+                    <button class="color-btn" data-color="purple">💜</button>
+                    <button class="color-btn" data-color="blue">💙</button>
+                    <button class="del-btn">✖️</button>
+
+                 </div>
+                    <div id=box>
+                        <p id=notes>${note.note}</p>
+                    </div>
+            </div>
+         </div>`;
+
+        noteElement.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', () =>
+                changeNoteColor(note.id, btn.dataset.color));
+
+            noteElement.querySelector('.del-btn').addEventListener('click', () => deleteNote(note.id))
+
+        });
+
+        notesContainer.appendChild(noteElement);
+    });
+}
+
+
+
+
 function removeNote(elem) {
     var note = elem.parentElement
     const noteId = note.id
@@ -110,9 +182,10 @@ function removeNote(elem) {
     }));
 }
 
-function connectWS(){
+
+function connectWS() {
     socket = webSocket()
 }
 connectWS()
 
-export { dragElement, addNote, editNote, removeNote, connectWS }
+export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, }
