@@ -4,20 +4,28 @@
 GET {{apiURL}}/boards
 Authorization: Bearer {{token}}
 
-
 ###
-POST {{apiURL}}/boards/6703ef052b37b94819d85360/notes
+
+POST {{apiURL}}/boards
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "title": "Home",
-    "note" : "lalalalla",
+    "title": "Fashion"
+}
+###
+POST {{apiURL}}/boards/67050916700978f4b691606e/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Dragon",
+    "note" : "should be blalaallala",
     "color": "ff0000",
     "positionT" :  "10px",
     "positionL" : "20px"
 }
 
 ###
-GET {{apiURL}}/boards/6703ef052b37b94819d85360/notes
+GET {{apiURL}}/boards/67050916700978f4b691606e/notes
 Authorization: Bearer {{token}}

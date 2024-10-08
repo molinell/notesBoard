@@ -6,8 +6,6 @@ const prisma = new PrismaClient()
 
 
 // Denna endpoint returnerar BOARDS
-// en del users har access till vissa boards
-// Dessa accessright hämtas från DB
 
 // Get the boards connected to the user
 router.get('/', authorize, async (req,res) => {
@@ -26,13 +24,29 @@ router.get('/', authorize, async (req,res) => {
         res.status(500).send({msg: "ERROR, can't get boards"})
     }   
 })
-// Notes har board id
-//sen har varje note samma board id pluss ett eget ID
 
-// har ej uppdareat prisma
+// POST a new board
+router.post('/', authorize, async (req, res) => {
+    const { title } = req.body; // Get the title from request body
 
+    try {
+        const newBoard = await prisma.boards.create({
+            data: {
+                title: title,
+                authorId: req.userData.sub // Associate the board with authenticated user
+            }
+        });
+
+        res.status(201).send({ msg: "New board created", board: newBoard });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ msg: "ERROR creating board" });
+    }
+});
+
+// GET notes for a specific board
 router.get('/:boardId/notes', authorize, async (req, res) => {
-
     const boardId = req.params.boardId; // Get the boardId from the request parameters
 
     try {
@@ -61,27 +75,8 @@ router.get('/:boardId/notes', authorize, async (req, res) => {
     }
 })
 
-// POST a new board
-router.post('/', authorize, async (req, res) => {
-    const { title } = req.body; // Get the title from request body
 
-    try {
-        const newBoard = await prisma.boards.create({
-            data: {
-                title: title,
-                authorId: req.userData.sub // Associate the board with authenticated user
-            }
-        });
-
-        res.status(201).send({ msg: "New board created", board: newBoard });
-
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ msg: "ERROR creating board" });
-    }
-});
-
-// SKAP NY NOTE I EN BOARD posta en notes i en specifik board
+// POST new note for a specific board
 router.post('/:boardId/notes', authorize, async (req, res) => {
     const { boardId } = req.params; // Get the board ID from the URL
     const { note, color, positionT, positionL } = req.body; // Get the note content from the request body

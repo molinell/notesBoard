@@ -4,7 +4,6 @@ require('dotenv').config()
 const PORT = process.env.PORT || 8088
 const app = express(); 
 
-// Endast om man är inne på denna domän så kan man hämta appen
 app.use(cors({
   origin: process.env.DEV_ORIGIN || "https://people.arcada.fi"
   //origin: "*" // öppen för alla domäner
@@ -16,7 +15,7 @@ const requestLog = (req, res, next) =>{
     next()
 }
 
-app.use(requestLog);  // Körs för varje rutt efter detta 
+app.use(requestLog);  // Körs för varje rutt efter denna rad
 
 
 // Syns på första sidan
@@ -26,7 +25,7 @@ app.get('/', (req, res) => {
 })
 
 // Behövs för att man ska kunna ta emot JSON i req.body
-// Allt här efter bli till JSON, alltid så efter app.use
+// Allt här efter bli till JSON pga app.use
 app.use(express.json()) 
 
 const notesRouter = require('./routes/notes')

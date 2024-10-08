@@ -30,8 +30,9 @@ Content-Type: application/json
 ###
 GET {{apiURL}}/users/profile
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { 
-    "email": "vanHerpen@site.com",
-    "password": "Password12388"
+    "email": "mina@hotmail.com",
+    "password": "123"
 }

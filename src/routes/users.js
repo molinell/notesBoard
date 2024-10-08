@@ -73,7 +73,7 @@ router.post('/login', async (req, res) => {
     }, process.env.JWT_SECRET, { expiresIn: '30d'})
 
     res.send({msg: "Login ok", jwt: token})
-    res.redirect('users/profile')
+    //res.redirect('users/profile')
 
 
 })

@@ -18,7 +18,6 @@ async function registerUser(username, password, email){
    const role = "user"
    // Boards? 
     try {
-        // Hur göra med role, user? 
         const resp = await fetch(`${API_URL}/users/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -59,8 +58,8 @@ async function logIn(user, pass){
         if (token) {
             const token = respData.jwt;
             console.log("Login successful, token:", token);
-            // Getch notes right away as the user logs in 
             //fetchNotes(token);
+            fetchBoards(token);
             //respData.redirect('/users/profile')
 
         } else {
@@ -71,13 +70,8 @@ async function logIn(user, pass){
     }
 }
 
-// LAGA EN CREATE NOTES
-
-// en knapp för new note
-
 
 // Function for getting the notes 
-
 async function fetchBoards(token) {
     // Fetch the notes first 
     const boardsResp = await fetch(`${API_URL}/boards`, { //samma som i test.http
@@ -94,14 +88,70 @@ async function fetchBoards(token) {
     // Check if the response contains the notes
     if (boardsData && boardsData.boards) {
         console.log("User's boards:", boardsData.boards);
-        displayNotes(boardsData.boards); // Call function to display notes
+        displayBoards(boardsData.boards); // Call function to display notes
     } else {
-        console.log("You have 0 notes, create one!");
-        // HTML meddelande create a note !
+        console.log("You have 0 boards, create one!");
+        displayNoBoardsMessage()
     }
 }
 
+function displayBoards(boards) {
+    const boardscontainer = document.getElementById("boards-container");
 
+    // Clear any existing content
+    boardscontainer.innerHTML = "";
+
+    // Loop through each board and create HTML elements to display them
+    boards.forEach(board => {
+        const boardElement = document.createElement("div");
+        boardElement.classList.add("board-item");
+        boardElement.textContent = `Board Title: ${board.title}`; // Assuming the board has a title field
+
+        const viewNotesButton = document.createElement("button");
+        viewNotesButton.textContent = "View Notes";
+        viewNotesButton.addEventListener("click", () => {
+            fetchNotesForBoard(board.id); 
+        });
+
+        boardElement.appendChild(viewNotesButton);
+        boardscontainer.appendChild(boardElement);
+    });
+}
+
+function displayNoBoardsMessage() {
+    const boardsContainer = document.getElementById("boards-container");
+    boardsContainer.innerHTML = "<p>You have no boards. Create a board to get started!</p>";
+}
+
+// Function to fetch and display notes for a specific board
+async function fetchNotesForBoard(boardId) {
+    try {
+        token = localStorage.getItem('token');
+
+        const notesResp = await fetch(`${API_URL}/boards/${boardId}/notes`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!notesResp.ok) {
+            console.error("Failed to fetch notes:", notesResp.statusText);
+            return;
+        }
+
+        const notesData = await notesResp.json();
+        console.log("Fetched notes for board:", notesData);
+
+        // Call a function to display the notes (similar to displayBoards)
+        displayNotes(notesData.notes); 
+    } catch (error) {
+        console.error("Error fetching notes:", error);
+    }
+}
+
+/*
 async function fetchNotes(token) {
     // Fetch the notes first 
     const notesResp = await fetch(`${API_URL}/notes`, { //samma som i test.http
@@ -123,7 +173,7 @@ async function fetchNotes(token) {
         console.log("You have 0 notes, create one!");
         // HTML meddelande create a note !
     }
-}
+} */
 
 function displayNotes(notes) {
     // Display in separate divs 
@@ -134,7 +184,6 @@ function displayNotes(notes) {
         const noteElement = document.createElement('div');
         noteElement.id = `note-${note.id}`; // Unique id for each note 
         
-
         noteElement.innerHTML = 
         `<div id=outerwrap>
             <div id=innerwrap>
