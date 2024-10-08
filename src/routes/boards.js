@@ -61,8 +61,7 @@ router.get('/:boardId/notes', authorize, async (req, res) => {
     }
 })
 
-// POST
-
+// POST a new board
 router.post('/', authorize, async (req, res) => {
     const { title } = req.body; // Get the title from request body
 
@@ -70,7 +69,7 @@ router.post('/', authorize, async (req, res) => {
         const newBoard = await prisma.boards.create({
             data: {
                 title: title,
-                authorId: req.userData.sub // Associate the board with the authenticated user
+                authorId: req.userData.sub // Associate the board with authenticated user
             }
         });
 
@@ -81,5 +80,40 @@ router.post('/', authorize, async (req, res) => {
         res.status(500).send({ msg: "ERROR creating board" });
     }
 });
+
+// SKAP NY NOTE I EN BOARD posta en notes i en specifik board
+router.post('/:boardId/notes', authorize, async (req, res) => {
+    const { boardId } = req.params; // Get the board ID from the URL
+    const { note, color, positionT, positionL } = req.body; // Get the note content from the request body
+
+    try {
+        // Check if the board exists and if the user has access to it
+        const board = await prisma.boards.findUnique({
+            where: { id: boardId, authorId: req.userData.sub},
+        });
+
+        if (!board) {
+            return res.status(404).send({ msg: "Board not found or you don't have access to it" });
+        }
+
+        const newNote = await prisma.notes.create({
+            data: {
+                note: note,
+                authorId: req.userData.sub, // JWT ID
+                boardId: boardId, // Associate the note with the board
+                color: color,
+                positionT: positionT, 
+                positionL: positionL,
+
+            },
+        });
+
+        res.status(201).send({ msg: "New note created", note: newNote });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ msg: "Error creating note" });
+    }
+});
+
 
 module.exports = router

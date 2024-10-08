@@ -22,14 +22,20 @@ router.get('/', authorize, async (req,res) => {
     }   
 })
 
+
+
+
+/*
 router.post('/', authorize, async (req, res) =>{ //Namnslös funktion = därför async, funkar med promises
     console.log(req.body);
-
     try{
+
         const newNote = await prisma.notes.create({
             data: {
+                //COLORS 
                 authorId: req.userData.sub,
-                note: req.body.note
+                note: req.body.note,
+                color: "b4d9ff"
             }
         }) //notes nu ett objekt i prisma (ORM/ODM)
 
@@ -40,7 +46,7 @@ router.post('/', authorize, async (req, res) =>{ //Namnslös funktion = därför
         res.status(500).send({msg: "ERROR"})
     }
     
-})
+})*/
 
 /*
 router.put('/:id', async (req, res) =>{

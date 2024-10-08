@@ -6,14 +6,18 @@ Authorization: Bearer {{token}}
 
 
 ###
-POST {{apiURL}}/boards
+POST {{apiURL}}/boards/6703ef052b37b94819d85360/notes
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "title": "Home"
+    "title": "Home",
+    "note" : "lalalalla",
+    "color": "ff0000",
+    "positionT" :  "10px",
+    "positionL" : "20px"
 }
 
 ###
-GET {{apiURL}}/boards/notes
+GET {{apiURL}}/boards/6703ef052b37b94819d85360/notes
 Authorization: Bearer {{token}}

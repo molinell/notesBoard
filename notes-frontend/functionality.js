@@ -77,6 +77,31 @@ async function logIn(user, pass){
 
 
 // Function for getting the notes 
+
+async function fetchBoards(token) {
+    // Fetch the notes first 
+    const boardsResp = await fetch(`${API_URL}/boards`, { //samma som i test.http
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    });
+
+    const boardsData = await boardsResp.json(); 
+    console.log("Fetched boards:", boardsData);
+
+    // Check if the response contains the notes
+    if (boardsData && boardsData.boards) {
+        console.log("User's boards:", boardsData.boards);
+        displayNotes(boardsData.boards); // Call function to display notes
+    } else {
+        console.log("You have 0 notes, create one!");
+        // HTML meddelande create a note !
+    }
+}
+
+
 async function fetchNotes(token) {
     // Fetch the notes first 
     const notesResp = await fetch(`${API_URL}/notes`, { //samma som i test.http
