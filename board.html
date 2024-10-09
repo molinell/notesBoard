@@ -11,22 +11,37 @@
 
 <!-- Works with ws-node in this repo -->
 
-<body>
+<body> 
     <div id="err" style="color: red;"></div>
     <div id="conn_status">Not connected</div>
+    <!--<input id="button-show" type="button" value="Show boards and notes">
+    Laga eventListeners på varje board -> Onclick to displayNotesForBoard
     
+    -->
+    <div id="board-wrap">
+        <div id="board">Boards:</div>
+        <div id="boards-container"></div> 
+    </div>
     <button type="button" id="add-btn">+ new note</button>
 
-    <div class="note-container">
+    <div class="note-container"></div>
         
-    </div>
+    
 
     <script type="module">
-        import { dragElement, addNote, editNote, removeNote, connectWS, saveBoard } from './js/functionality.js'
+        import { dragElement, addNote, editNote, removeNote, connectWS, saveBoard, fetchNotesForBoard, 
+            displayNotes, fetchBoards, displayBoards, displayNoBoardsMessage } from './js/functionality.js'
 
         //enklast såhär, att göra till global så att man kan endast dragga själva noten
         //window.dragElement = dragElement 
+        
+        const token = localStorage.getItem('token');
 
+    // Fetch the boards right away when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchBoards(token);  
+      
+        });
         document.addEventListener('dblclick', (evt) => {
             if(evt.target.classList == 'note-content') editNote(evt.target)
         })
@@ -36,7 +51,11 @@
             if(evt.target.id == 'reconn-btn') connectWS()
             if(evt.target.id == 'add-btn') addNote()
             if(evt.target.id == 'save-btn') saveBoard()
-        })
+            if(evt.target.id == 'boards-container') {
+                // Vet ej hur ja ska fp boardID, den som e inne i DB
+                fetchNotesForBoard(boardId); 
+
+        }})
 
         document.addEventListener('boardchange', () => {
             
@@ -48,6 +67,7 @@
             if(evt.target.classList == 'notes') dragElement(evt, evt.target)
         })
     </script>
+   
 
 </body>
 

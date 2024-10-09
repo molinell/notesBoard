@@ -60,8 +60,9 @@ async function logIn(user, pass){
         if (token) {
             const token = respData.jwt;
             console.log("Login successful, token:", token);
-            fetchBoards(token);
+            //fetchBoards(token);
             //respData.redirect('/users/profile')
+            window.location.replace("/board.html");
 
         } else {
             console.log("Login failed:", respData.msg);
@@ -70,7 +71,7 @@ async function logIn(user, pass){
         console.error("Error occurred during login:", error);
     }
 }
-
+/*
 async function fetchBoards(token) {
     const boardsResp = await fetch(`${API_URL}/boards`, { 
         method: "GET",
@@ -120,13 +121,13 @@ function displayBoards(boards) {
 
         boardElement.appendChild(viewNotesButton);
         boardscontainer.appendChild(boardElement);
-        */
+        
     });
-}
-
+}*/
+/*
 function displayNoBoardsMessage() {
     const boardsContainer = document.getElementById("boards-container");
     boardsContainer.innerHTML = "<p>You have no boards. Create a board to get started!</p>";
-}
+}*/
 
 export { registerUser, logIn }

@@ -124,6 +124,59 @@ function addNote() {
     document.dispatchEvent(boardChange)
 }
 
+
+async function fetchBoards(token) {
+    console.log(`Fetching boards for user wiht token ${token}`)
+    const boardsResp = await fetch(`${API_URL}/boards`, { 
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    });
+
+    const boardsData = await boardsResp.json();
+    console.log("Fetched boards:", boardsData);
+
+    // Check if the response contains the notes
+    if (boardsData && boardsData.boards) {
+        console.log("User's boards:", boardsData.boards);
+        displayBoards(boardsData.boards); // Call function to display notes
+    } else {
+        console.log("You have 0 boards, create one!");
+        displayNoBoardsMessage()
+    }
+}
+
+function displayBoards(boards) {
+    const boardscontainer = document.getElementById("boards-container");
+    boardscontainer.innerHTML = "";
+
+    // Loop through each board and create HTML elements to display them
+    boards.forEach(board => {
+        const boardElement = document.createElement("div");
+    //behöver dynamsikt hitta hur många notes de finns
+
+    boardscontainer.innerHTML += `
+        <div>
+       ${board.title}
+        </div>`
+
+        /*
+        viewNotesButton.addEventListener("click", () => {
+            fetchNotesForBoard(board.id); 
+        });
+
+        */
+    });
+    
+}
+
+
+function displayNoBoardsMessage() {
+    const boardsContainer = document.getElementById("boards-container");
+    boardsContainer.innerHTML = "<p>You have no boards. Create a board to get started!</p>";
+}
 // Function to fetch and display notes for a specific board
 async function fetchNotesForBoard(boardId) {
     try {
@@ -241,4 +294,4 @@ function connectWS() {
 }
 connectWS()
 
-export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard }
+export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage }

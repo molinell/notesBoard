@@ -179,3 +179,21 @@ input[type="text"], input[type="password"] {
   border-style: none;
 
 }
+#board-wrap{
+  width: 600px;
+  border-color: white;
+  border: solid;
+  display: flex;
+  gap: 20px;
+
+}
+
+#board {
+  width: 100px; 
+  border-right: 1px solid #ccc;
+}
+
+#boards-container {
+  flex-grow: 1; /* Allow this container to take the remaining space */
+  padding-left: 20px; /* Add padding to the contents */
+}
