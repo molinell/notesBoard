@@ -32,12 +32,14 @@ function webSocket() {
                     const elem = document.querySelector(`#${data.elemId}`)
                     elem.style.top = data.top
                     elem.style.left = data.left
+                    elem.setAttribute("data-modified", "true")
                     break
                 }
 
                 case Events.Content: {
                     const elem = document.querySelector(`#${data.elemId}`)
                     elem.innerText = data.value
+                    elem.setAttribute("data-modified", "true")
                     break
                 }
 
@@ -53,6 +55,7 @@ function webSocket() {
                     newNote.style.left = '50%'
                     newNote.style.transform = 'translate(50%, 50%)'
                     newNote.style.background = data.noteColor
+                    newNote.setAttribute("data-new", "true")
                     console.log("Added new note")
                     break
                 }

@@ -15,34 +15,37 @@
     <div id="err" style="color: red;"></div>
     <div id="conn_status">Not connected</div>
     
-    <button type="button" id="add-note">+ new note</button>
+    <button type="button" id="add-btn">+ new note</button>
 
     <div class="note-container">
-        <div id="note1" class="notes" onmousedown="dragElement(this)">
-            <button type="button" class="rm-btn">✕</button>
-            <div id="content1" class="note-content">hihi</div>
-        </div>
-
-        <div id="note2" class="notes" onmousedown="dragElement(this)">
-            <button type="button" class="rm-btn">✕</button>
-            <div id="content2" class="note-content">ojdå</div>
-        </div>
+        
     </div>
 
     <script type="module">
-        import { dragElement, addNote, editNote, removeNote, connectWS } from './js/functionality.js'
+        import { dragElement, addNote, editNote, removeNote, connectWS, saveBoard } from './js/functionality.js'
 
         //enklast såhär, att göra till global så att man kan endast dragga själva noten
-        window.dragElement = dragElement 
+        //window.dragElement = dragElement 
+
+        document.addEventListener('dblclick', (evt) => {
+            if(evt.target.classList == 'note-content') editNote(evt.target)
+        })
 
         document.addEventListener('click', (evt) => {
             if(evt.target.classList == 'rm-btn') removeNote(evt.target)
             if(evt.target.id == 'reconn-btn') connectWS()
-            if(evt.target.id == 'add-note') addNote()
+            if(evt.target.id == 'add-btn') addNote()
+            if(evt.target.id == 'save-btn') saveBoard()
         })
 
-        document.addEventListener('dblclick', (evt) => {
-            if(evt.target.classList == 'note-content') editNote(evt.target)
+        document.addEventListener('boardchange', () => {
+            
+            if(!document.querySelector('#save-btn'))
+                document.body.innerHTML += `<button type="button" id="save-btn">save changes</button>`
+        })
+
+        document.addEventListener('mousedown', (evt) => {
+            if(evt.target.classList == 'notes') dragElement(evt, evt.target)
         })
     </script>
 
