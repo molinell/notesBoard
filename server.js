@@ -12,12 +12,10 @@ function authorise(urlParams) {
     try{
         const token = urlParams.get('access_token')
         const userData = jwt.verify(token, process.env.JWT_SECRET)
-        const boardIdString = urlParams.get('boardId')
-        const boardId = boardIdString.split("-")[1]
 
         console.log(`Token authorised for user ${userData.sub} ${userData.name}`)
 
-        return {status: 0, boardId: boardId, userData: userData}
+        return {status: 0, boardId: -1, userData: userData}
     } catch(err) {
         console.log(err)
         return {status: 1, boardId:-1, userData: null}
@@ -28,7 +26,7 @@ function authorise(urlParams) {
 wss.on('connection', (ws, req) => {
 
     const urlParams = new URLSearchParams(req.url.slice(1));
-    const {status, boardId, userData} = authorise(urlParams)
+    const {status, bid, userData} = authorise(urlParams)
     if(status == 1){
         ws.send(JSON.stringify({
             status: 1,
@@ -36,6 +34,9 @@ wss.on('connection', (ws, req) => {
         }));
         ws.close();
     }
+
+    const boardIdString = urlParams.get('boardId')
+    const boardId = boardIdString.split("-")[1]
 
     console.log("On board " + boardId)
 
@@ -73,12 +74,14 @@ wss.on('connection', (ws, req) => {
     });
 
     ws.on('close', () => {
+        console.log("client closed connection: ")
         clients[boardId].delete(ws)
 
         for(let i = 0; i < clients.size; i++){
             clients[i].forEach(client => {
+                console.log(client)
 
-                client.send(JSON.stringify({
+                /lient.send(JSON.stringify({
                     msg: "",
                     status: 0,
                     event: "Connection",
