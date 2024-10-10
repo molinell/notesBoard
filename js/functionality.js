@@ -2,7 +2,7 @@ import { webSocket } from './websocket.js'
 import { Events, NoteColors } from './utils.js';
 
 //const API_URL = "http://localhost:8088";
-const API_URL = "https://notes-board.azurewebsites.net/";
+const API_URL = "https://notes-board.azurewebsites.net";
 
 let SOCKET = null
 
@@ -289,13 +289,25 @@ async function removeNote(elem) {
         event: Events.Remove,
         elemId: noteId,
     }));
+    const noteContainer = document.querySelector('.note-container')
+    const token = localStorage.getItem('jwt_token')
 
+
+    for (const child of noteContainer.children) {
     try{
-        const resp = await fetch(`${API_URL}/boards/`)
+        const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (child.getAttribute('data-new') ==! "new") ? "/" + child.getAttribute('data-id') : "" }` 
+        console.log(FETCH_URL)
+        const resp = await fetch( FETCH_URL , {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }})
     } catch(error){
+        console.error("Error occurred during delete", error);
 
     }
-}
+}}
 
 
 function connectWS() {
