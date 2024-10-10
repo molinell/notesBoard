@@ -231,13 +231,18 @@ async function saveBoard() {
     document.querySelector('#save-btn').innerText = "saving..."
     const noteContainer = document.querySelector('.note-container')
 
+    const token = localStorage.getItem('jwt_token')
+
     for (const child of noteContainer.children) {
         if (child.getAttribute('data-modified') == 'true') { 
             try {
                 const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (!child.getAttribute('data-new')) ? "/" + child.getAttribute('data-id') : "" }` //lägger till idn om inte ny
                 const resp = await fetch( FETCH_URL , {
                     method: ((child.getAttribute('data-new') == 'true') ? "POST" : "PUT"),
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
                         "note": document.querySelector(`#${child.id}-content`).innerText,
                         "color": child.style.background,
@@ -248,7 +253,7 @@ async function saveBoard() {
                /*console.log(child)
                console.log(child.id)
                 console.log(document.querySelector(`#${child.id}-content`).innerText)*/
-                console.log("Saving successfull for " + child.id)*
+                console.log("Saving successfull for " + child.id)
                 console.log(FETCH_URL)
 
 
