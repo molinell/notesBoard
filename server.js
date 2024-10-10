@@ -20,7 +20,7 @@ function authorise(urlParams) {
         return {status: 0, boardId: boardId, userData: userData}
     } catch(err) {
         console.log(err)
-        return {status: 1, userData: null}
+        return {status: 1, boardId:-1, userData: null}
     }
 }
 
