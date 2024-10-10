@@ -281,9 +281,9 @@ async function saveBoard() {
 }
 
 async function removeNote(elem) {
-    var note = elem.parentElement
-    const noteId = note.id
-    console.log("remove note " + noteId)
+    var note = elem.parentElement;
+    const noteId = note.getAttribute("data-id");  
+    console.log("Remove note: " + noteId);
 
     SOCKET.send(JSON.stringify({
         event: Events.Remove,
@@ -292,11 +292,9 @@ async function removeNote(elem) {
     const noteContainer = document.querySelector('.note-container')
     const token = localStorage.getItem('jwt_token')
 
-
-    for (const child of noteContainer.children) {
     try{
-        const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (child.getAttribute('data-new') ==! "new") ? "/" + child.getAttribute('data-id') : "" }` 
-        console.log(FETCH_URL)
+        const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${noteId ? `/${noteId}` : ''} ` 
+        console.log("Urlen för delete: "+FETCH_URL)
         const resp = await fetch( FETCH_URL , {
                     method: "DELETE",
                     headers: {
@@ -307,7 +305,7 @@ async function removeNote(elem) {
         console.error("Error occurred during delete", error);
 
     }
-}}
+}
 
 
 function connectWS() {
