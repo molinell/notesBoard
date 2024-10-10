@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8088";
+//const API_URL = "http://localhost:8088";
+const API_URL = "https://notes-board.azurewebsites.net/";
 
 //Knapparna är här nu då de ej funkar om satta in i main.js
 /*document.querySelector('#button-login').addEventListener('click', () =>{

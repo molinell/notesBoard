@@ -1,7 +1,8 @@
 import { webSocket } from './websocket.js'
 import { Events, NoteColors } from './utils.js';
 
-const API_URL = "http://localhost:8088";
+//const API_URL = "http://localhost:8088";
+const API_URL = "https://notes-board.azurewebsites.net/";
 
 let SOCKET
 
