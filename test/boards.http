@@ -29,3 +29,26 @@ Authorization: Bearer {{token}}
 ###
 GET {{apiURL}}/boards/67050916700978f4b691606e/notes
 Authorization: Bearer {{token}}
+
+###
+
+PUT {{apiURL}}/boards/67050916700978f4b691606e/67078e91c322546d976359d5
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+{
+    "note": "vain tröja",
+    "color": "#ffffff",
+    "positionT": "30px",
+    "positionL": "80px"
+}
+
+###
+
+DELETE {{apiURL}}/boards/67050916700978f4b691606e/67078e91c322546d976359d5
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+

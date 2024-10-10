@@ -74,13 +74,13 @@ router.get('/:boardId/notes', authorize, async (req, res) => {
 
 // POST new note for a specific board
 router.post('/:boardId/notes', authorize, async (req, res) => {
-    const { boardId } = req.params; // Get the board ID from the URL
+    const { boardId } = req.params.boardId; // Get the board ID from the URL
     const { note, color, positionT, positionL } = req.body; // Get the note content from the request body
 
     try {
         // Check if the board exists and if the user has access to it
         const board = await prisma.boards.findUnique({
-            where: { id: boardId, authorId: req.userData.sub},
+            where: { id: boardId },
         });
 
         if (!board) {
@@ -107,27 +107,26 @@ router.post('/:boardId/notes', authorize, async (req, res) => {
 });
 
 
-router.put('/:boardId/notes', authorize, async  (req, res) =>{
-    const { boardId } = req.params;
+router.put('/:boardId/:noteId', authorize, async  (req, res) =>{
+    const { boardId } = req.params.boardId;
+    const { noteId } = req.params.noteId
     const { note, color, positionT, positionL } = req.body;
     
     try {
         const board = await prisma.boards.findUnique({
-            where: { id: boardId, authorId: req.userData.sub},
+            where: { id: boardId },
         });
 
         if (!board) {
             return res.status(404).send({ msg: "Board not found or you don't have access to it" });
         }
 
-        const updateNote = await prisma.notes.create({
+        const updateNote = await prisma.notes.update({
             where: {
-                id: req.params.id,
+                id: noteId,
             },
             data: {
                 note: note,
-                authorId: req.userData.sub, // JWT ID
-                boardId: boardId, // Associate the note with the board
                 color: color,
                 positionT: positionT, 
                 positionL: positionL,
@@ -135,11 +134,38 @@ router.put('/:boardId/notes', authorize, async  (req, res) =>{
             },
         });
 
-        res.status(201).send({ msg: "Note updates", note: updateNote });
+        res.status(201).send({ msg: "Note updated", note: updateNote });
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ msg: "Error updatning note" });
     }
  })
+
+ router.delete('/:boardId/:noteId', authorize, async  (req, res) =>{
+    const { boardId, noteId } = req.params;
+    //const { noteId } = req.params.noteId
+
+    try {
+        const board = await prisma.boards.findUnique({
+            where: { id: boardId },
+        });
+
+        if (!board) {
+            return res.status(404).send({ msg: "Board not found or you don't have access to it" });
+        }
+
+        const deleteNote = await prisma.notes.delete({
+            where: {
+                id: noteId,
+            },
+        });
+
+        res.status(200).send({ msg: "Note deleted", note: deleteNote });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ msg: "Error deleting note" });
+    }
+})
+
 
 module.exports = router
