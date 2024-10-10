@@ -2,7 +2,7 @@ import { webSocket } from './websocket.js'
 import { Events, NoteColors } from './utils.js';
 
 //const API_URL = "http://localhost:8088";
-const API_URL = "https://notes-board.azurewebsites.net";
+const API_URL = "https://notes-board.azurewebsites.net/";
 
 let SOCKET = null
 
@@ -236,7 +236,8 @@ async function saveBoard() {
     for (const child of noteContainer.children) {
         if (child.getAttribute('data-modified') == 'true') { 
             try {
-                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (!child.getAttribute('data-new')) ? "/" + child.getAttribute('data-id') : "" }` //lägger till idn om inte ny
+                console.log("trying")
+                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (child.getAttribute('data-new') ==! "new") ? "/" + child.getAttribute('data-id') : "" }` //lägger till idn om inte ny
                 const resp = await fetch( FETCH_URL , {
                     method: ((child.getAttribute('data-new') == 'true') ? "POST" : "PUT"),
                     headers: {
@@ -250,12 +251,15 @@ async function saveBoard() {
                         "positionL": child.style.left
                     })
                 })
+                console.log("got response")
                /*console.log(child)
                console.log(child.id)
                 console.log(document.querySelector(`#${child.id}-content`).innerText)*/
                 console.log("Saving successfull for " + child.id)
                 console.log(FETCH_URL)
-
+                if(!resp.ok){
+                    console.error("Fetch error: " + resp.status + resp.statusText)
+                }
 
             } catch (error) {
                 console.error("Error occurred during saving", error);
@@ -264,6 +268,8 @@ async function saveBoard() {
                     document.querySelector('#save-btn').innerText = "save"
                 }, 5000)
             }
+            child.setAttribute("data-modified", "false")
+            child.setAttribute("data-new", "false")
         }
     }
 
@@ -274,16 +280,21 @@ async function saveBoard() {
     
 }
 
-function removeNote(elem) {
+async function removeNote(elem) {
     var note = elem.parentElement
     const noteId = note.id
     console.log("remove note " + noteId)
-    note.remove()
 
     SOCKET.send(JSON.stringify({
         event: Events.Remove,
         elemId: noteId,
     }));
+
+    try{
+        const resp = await fetch(`${API_URL}/boards/`)
+    } catch(error){
+
+    }
 }
 
 
