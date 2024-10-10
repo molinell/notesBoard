@@ -52,7 +52,7 @@ router.get('/:boardId/notes', authorize, async (req, res) => {
         const board = await prisma.boards.findUnique({
             where: { id: boardId }
         });
-
+       
         // Fetch notes associated with specific board
         const notes = await prisma.notes.findMany({
             where: {
@@ -74,7 +74,7 @@ router.get('/:boardId/notes', authorize, async (req, res) => {
 
 // POST new note for a specific board
 router.post('/:boardId/notes', authorize, async (req, res) => {
-    const { boardId } = req.params.boardId; // Get the board ID from the URL
+    const { boardId } = req.params; // Get the board ID from the URL
     const { note, color, positionT, positionL } = req.body; // Get the note content from the request body
 
     try {
@@ -108,8 +108,8 @@ router.post('/:boardId/notes', authorize, async (req, res) => {
 
 
 router.put('/:boardId/:noteId', authorize, async  (req, res) =>{
-    const { boardId } = req.params.boardId;
-    const { noteId } = req.params.noteId
+    const { boardId } = req.params;
+    const { noteId } = req.params;
     const { note, color, positionT, positionL } = req.body;
     
     try {

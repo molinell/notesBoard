@@ -19,8 +19,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "title": "Sorter",
-    "note" : "Pirkka Lager, Aura, Gränges",
+    "note" : "Hello",
     "color": "ff0000",
     "positionT" :  "10px",
     "positionL" : "20px"
