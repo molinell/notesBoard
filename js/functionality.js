@@ -125,6 +125,43 @@ function addNote() {
     document.dispatchEvent(boardChange)
 }
 
+function displayNotes(notes) {
+    // Display in separate divs 
+    const notesContainer = document.querySelector('.note-container');
+    notesContainer.innerHTML = '';
+
+    notes.forEach(note => {
+        const noteElement = document.createElement('div');
+        noteElement.id = `note${NOTE_COUNT}`; //tänker att själva idn är bara note1, note2 osv så när man lägger till en ny kommer den i följd
+        // Unique id for each note 
+
+        noteElement.innerHTML =
+            `<div id=outerwrap>
+            <div id=innerwrap>
+                 <div id="button-wrap">
+                    <button class="color-btn" data-color="red">❤️</button>
+                    <button class="color-btn" data-color="purple">💜</button>
+                    <button class="color-btn" data-color="blue">💙</button>
+                    <button class="del-btn">✖️</button>
+                 </div>
+                    <div id=box>
+                        <p id=notes>${note.note}</p>
+                    </div>
+            </div>
+         </div>`;
+
+        noteElement.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', () =>
+                changeNoteColor(note.id, btn.dataset.color));
+
+            noteElement.querySelector('.del-btn').addEventListener('click', () => deleteNote(note.id))
+
+        });
+        noteElement.setAttribute("data-modified", "false")
+        noteElement.setAttribute("data-id", note.id) //sätter den egentliga idn som attribute
+        notesContainer.appendChild(noteElement);
+    });
+}
 
 async function fetchBoards(token) {
     console.log(`Fetching boards for user wiht token ${token}`)
@@ -182,7 +219,7 @@ function displayNoBoardsMessage() {
 // Function to fetch and display notes for a specific board
 async function fetchNotesForBoard(boardId) {
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('jwt_token');
 
         const notesResp = await fetch(`${API_URL}/boards/${boardId}/notes`, {
             method: "GET",
@@ -205,46 +242,6 @@ async function fetchNotesForBoard(boardId) {
     } catch (error) {
         console.error("Error fetching notes:", error);
     }
-}
-
-// Display notes in index.html
-function displayNotes(notes) {
-    // Display in separate divs 
-    const notesContainer = document.querySelector('.note-container');
-    notesContainer.innerHTML = '';
-
-    notes.forEach(note => {
-        const noteElement = document.createElement('div');
-        noteElement.id = `note${NOTE_COUNT}`; //tänker att själva idn är bara note1, note2 osv så när man lägger till en ny kommer den i följd
-        // Unique id for each note 
-
-        noteElement.innerHTML =
-            `<div id=outerwrap>
-            <div id=innerwrap>
-                 <div id="button-wrap">
-                    <button class="color-btn" data-color="red">❤️</button>
-                    <button class="color-btn" data-color="purple">💜</button>
-                    <button class="color-btn" data-color="blue">💙</button>
-                    <button class="del-btn">✖️</button>
-
-                 </div>
-                    <div id=box>
-                        <p id=notes>${note.note}</p>
-                    </div>
-            </div>
-         </div>`;
-
-        noteElement.querySelectorAll('.color-btn').forEach(btn => {
-            btn.addEventListener('click', () =>
-                changeNoteColor(note.id, btn.dataset.color));
-
-            noteElement.querySelector('.del-btn').addEventListener('click', () => deleteNote(note.id))
-
-        });
-        noteElement.setAttribute("data-modified", "false")
-        noteElement.setAttribute("data-id", note.id) //sätter den egentliga idn som attribute
-        notesContainer.appendChild(noteElement);
-    });
 }
 
 /*async*/ function saveBoard() {

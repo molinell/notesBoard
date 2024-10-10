@@ -1,20 +1,6 @@
 //const API_URL = "http://localhost:8088";
 const API_URL = "https://notes-board.azurewebsites.net/";
 
-//Knapparna är här nu då de ej funkar om satta in i main.js
-/*document.querySelector('#button-login').addEventListener('click', () =>{
-    const user = document.querySelector('#username').value;
-    const pass = document.querySelector('#password').value;
-    logIn(user, pass);
-});
-
-document.querySelector('#button-register').addEventListener('click', () =>{
-    const username = document.querySelector('#username-reg').value;
-    const password = document.querySelector('#password-reg').value;
-    const email = document.querySelector('#email-reg').value;
-    registerUser(username, password, email);
-});*/
-
 async function registerUser(username, password, email){
    const role = "user"
    // token skapas endast vid inloggning! Så, registrera först, sedan
@@ -56,7 +42,7 @@ async function logIn(user, pass){
         const respData = await resp.json();
         const token = respData.jwt
         // Save to local storage 
-        localStorage.setItem('token', token);
+        localStorage.setItem('jwt_token', token);
         
         if (token) {
             const token = respData.jwt;

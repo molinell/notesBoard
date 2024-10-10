@@ -35,7 +35,7 @@
         //enklast såhär, att göra till global så att man kan endast dragga själva noten
         //window.dragElement = dragElement 
         
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('jwt_token');
 
     // Fetch the boards right away when the page loads
         document.addEventListener('DOMContentLoaded', () => {
@@ -55,6 +55,7 @@
                 console.log(evt.target)
             //fetchNotesForBoard(evt.target.getAttribute("data-id")); 
             if(evt.target.getAttribute("data-id")) fetchNotesForBoard(evt.target.getAttribute("data-id"));
+            localStorage.setItem('board_id', evt.target.getAttribute("data-id"))
         }})
 
 
