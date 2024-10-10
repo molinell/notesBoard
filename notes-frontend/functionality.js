@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8088";
+//const API_URL = "http://localhost:8088";
+const API_URL="https://notes-board.azurewebsites.net/"
 //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NmZlM2MzMTU2OWIyNDI0MWVmZDZmYTgiLCJlbWFpbCI6InZhbkhlcnBlbkBzaXRlLmNvbSIsIm5hbWUiOiJJcmlzIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3Mjc5NDI2ODksImV4cCI6MTczMDUzNDY4OX0.WM56srt_rurZme3aX6rJrsH6nTci3UgWm8l1FXyTCXA";
 
 document.querySelector('#button-login').addEventListener('click', () =>{
