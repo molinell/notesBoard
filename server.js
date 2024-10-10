@@ -4,17 +4,17 @@ require('dotenv').config()
 const jwt = require("jsonwebtoken")
 //const authorise = require("../middleware/auth")
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 8080
 const wss = new WebSocket.Server({ port: PORT });
-const clients = [5]
+const clients = []
 
 function authorise(urlParams) {
     try{
         const token = urlParams.get('access_token')
         const userData = jwt.verify(token, process.env.JWT_SECRET)
-        const boardId = parseInt(urlParams.get('boardId'))
-        
-        if(!Object.values(userData.boards).includes(boardId)) throw new Error("Unauthorised for board")
+        const boardIdString = urlParams.get('boardId')
+        const boardId = boardIdString.split("-")[1]
+
         console.log(`Token authorised for user ${userData.sub} ${userData.name}`)
 
         return {status: 0, boardId: boardId, userData: userData}
@@ -73,13 +73,19 @@ wss.on('connection', (ws, req) => {
     });
 
     ws.on('close', () => {
-        /*if(clients != null){
-            for (let i = 0; i < clients.length; i++) {
-            if(clients[i].has(ws)) clients[i].delete(ws)
-        }
-        }*/
+        clients[boardId].delete(ws)
 
-            clients[boardId].delete(ws)
+        for(let i = 0; i < clients.size; i++){
+            clients[i].forEach(client => {
+
+                client.send(JSON.stringify({
+                    msg: "",
+                    status: 0,
+                    event: "Connection",
+                    connClients: clients[i].size
+                 }));
+                })
+        }
         
         console.log('Client disconnected');
     });
