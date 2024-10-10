@@ -6,7 +6,7 @@ async function registerUser(username, password, email){
    // token skapas endast vid inloggning! Så, registrera först, sedan
    // logga in för att nå till sin profil
     try {
-        // Hur göra med role, user? 
+        // flera boards sedan 
         const resp = await fetch(`${API_URL}/users/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -14,8 +14,7 @@ async function registerUser(username, password, email){
                 "name": username,
                 "email": email,
                 "role": role,
-                "password": password
-            })
+                "password": password})
         })
         console.log("New user created!")
 
@@ -47,8 +46,6 @@ async function logIn(user, pass){
         if (token) {
             const token = respData.jwt;
             console.log("Login successful, token:", token);
-            //fetchBoards(token);
-            //respData.redirect('/users/profile')
             window.location.replace("/board.html");
 
         } else {
@@ -58,63 +55,5 @@ async function logIn(user, pass){
         console.error("Error occurred during login:", error);
     }
 }
-/*
-async function fetchBoards(token) {
-    const boardsResp = await fetch(`${API_URL}/boards`, { 
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-        }
-    });
-
-    const boardsData = await boardsResp.json();
-    console.log("Fetched boards:", boardsData);
-
-    // Check if the response contains the notes
-    if (boardsData && boardsData.boards) {
-        console.log("User's boards:", boardsData.boards);
-        displayBoards(boardsData.boards); // Call function to display notes
-    } else {
-        console.log("You have 0 boards, create one!");
-        displayNoBoardsMessage()
-    }
-}
-
-function displayBoards(boards) {
-    const boardscontainer = document.getElementById("boards-container");
-    boardscontainer.innerHTML = "";
-
-    // Loop through each board and create HTML elements to display them
-    boards.forEach(board => {
-        const boardElement = document.createElement("div");
-        console.log("new note")
-    //behöver dynamsikt hitta hur många notes de finns
-
-    boardscontainer.innerHTML += `
-        <div>
-        Board Title: ${board.title}
-        </div>`
-
-        /*
-        boardElement.classList.add("board-item");
-        boardElement.textContent = `Board Title: ${board.title}`; // Assuming the board has a title field
-
-        const viewNotesButton = document.createElement("button");
-        viewNotesButton.textContent = "View Notes";
-        viewNotesButton.addEventListener("click", () => {
-            fetchNotesForBoard(board.id); // Function to fetch notes for the selected board
-        });
-
-        boardElement.appendChild(viewNotesButton);
-        boardscontainer.appendChild(boardElement);
-        
-    });
-}*/
-/*
-function displayNoBoardsMessage() {
-    const boardsContainer = document.getElementById("boards-container");
-    boardsContainer.innerHTML = "<p>You have no boards. Create a board to get started!</p>";
-}*/
 
 export { registerUser, logIn }

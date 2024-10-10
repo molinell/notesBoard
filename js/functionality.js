@@ -190,22 +190,13 @@ function displayBoards(boards) {
     const boardscontainer = document.getElementById("boards-container");
     boardscontainer.innerHTML = "";
 
-    // Loop through each board and create HTML elements to display them
     boards.forEach(board => {
         const boardElement = document.createElement("div");
-    //behöver dynamsikt hitta hur många notes de finns
     
     boardscontainer.innerHTML += `
         <div class="boards" data-id="${board.id}">
        ${board.title}
         </div>`
-
-        /*
-        viewNotesButton.addEventListener("click", () => {
-            fetchNotesForBoard(board.id); 
-        });
-
-        */
     });
     
 }
