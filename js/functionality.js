@@ -237,7 +237,8 @@ async function saveBoard() {
         if (child.getAttribute('data-modified') == 'true') { 
             try {
                 console.log("trying")
-                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (child.getAttribute('data-new') ==! "new") ? "/" + child.getAttribute('data-id') : "" }` //lägger till idn om inte ny
+                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (child.getAttribute('data-new') != "true") ? "/" + child.getAttribute('data-id') : "" }/notes` //lägger till idn om inte ny
+                //const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/notes`
                 const resp = await fetch( FETCH_URL , {
                     method: ((child.getAttribute('data-new') == 'true') ? "POST" : "PUT"),
                     headers: {
