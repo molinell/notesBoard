@@ -106,10 +106,10 @@ router.post('/:boardId/notes', authorize, async (req, res) => {
     }
 });
 
-/*
-router.put('/:boardId/notes', authorize, async =>{
-    const { boardId } = req.params; // Get the board ID from the URL
-    const { note, color, positionT, positionL } = req.body; // Get the note content from the request body
+
+router.put('/:boardId/notes', authorize, async  (req, res) =>{
+    const { boardId } = req.params;
+    const { note, color, positionT, positionL } = req.body;
     
     try {
         const board = await prisma.boards.findUnique({
@@ -140,5 +140,6 @@ router.put('/:boardId/notes', authorize, async =>{
         console.log(error.message);
         res.status(500).send({ msg: "Error updatning note" });
     }
-*/
+ })
+
 module.exports = router
