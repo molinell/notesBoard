@@ -4,7 +4,7 @@ import { Events, NoteColors } from './utils.js';
 //const API_URL = "http://localhost:8088";
 const API_URL = "https://notes-board.azurewebsites.net/";
 
-let SOCKET
+let SOCKET = null
 
 let NOTE_COUNT = 0 //håller koll på hur många notes det finns displayade
 
@@ -285,8 +285,9 @@ function removeNote(elem) {
 
 
 function connectWS() {
+    if(SOCKET != null) SOCKET.close()
     SOCKET = webSocket()
 }
-//connectWS()
+//if(localStorage.getItem("board_id")) connectWS()
 
 export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage }
