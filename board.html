@@ -53,9 +53,11 @@
             if(evt.target.id == 'save-btn') saveBoard()
             if(evt.target.classList == 'boards') {
                 console.log(evt.target)
+                
             //fetchNotesForBoard(evt.target.getAttribute("data-id")); 
             if(evt.target.getAttribute("data-id")) fetchNotesForBoard(evt.target.getAttribute("data-id"));
-            localStorage.setItem('board_id', evt.target.getAttribute("data-id"))
+            localStorage.setItem('board_id', evt.target.id)
+            connectWS()
         }})
 
 

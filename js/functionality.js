@@ -189,12 +189,12 @@ async function fetchBoards(token) {
 function displayBoards(boards) {
     const boardscontainer = document.getElementById("boards-container");
     boardscontainer.innerHTML = "";
-    const count = 0;
+    let count = 0;
     boards.forEach(board => {
         const boardElement = document.createElement("div");
     
     boardscontainer.innerHTML += `
-        <div id="board-${count}" class="boards" data-id="${board.id}">
+        <div id="board-${count++}" class="boards" data-id="${board.id}">
        ${board.title}
         </div>`
     });
@@ -287,6 +287,6 @@ function removeNote(elem) {
 function connectWS() {
     SOCKET = webSocket()
 }
-connectWS()
+//connectWS()
 
 export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage }
