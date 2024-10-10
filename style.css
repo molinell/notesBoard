@@ -13,17 +13,11 @@ body {
     color:#fff;
   
   }
-  
-/*Ta bort dethär*/
-  div[id^="note"] {
-    background-color: aliceblue;
-  }
 
   .notes{
     position: absolute;
     z-index: 9;
     text-align: center;
-    color: darkslategrey;
     cursor: move;
     width: 250px;
     height: 250px;
@@ -35,17 +29,6 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust 100px for desired column width */
     /*gap: 10px; /* Space between the grid items */
   /*}*/
-
-  /*Ta bort dethär*/
-  #note2 {
-    top: 200px;
-    left: 800px;
-  }
-
-  #note1{
-    top: 200px;
-    left: 500px;
-  }
 
   .note-content{
     /*width: 100%;
@@ -66,6 +49,8 @@ body {
     word-wrap: break-word;
 
     cursor: text;
+
+    background: inherit;
   }
 
   .rm-btn {

@@ -13,7 +13,6 @@
 
 <body> 
     <div id="err" style="color: red;"></div>
-    <div id="conn_status">Not connected</div>
     <!--<input id="button-show" type="button" value="Show boards and notes">
     Laga eventListeners på varje board -> Onclick to displayNotesForBoard
     
@@ -22,7 +21,8 @@
         <div id="board">Boards:</div>
         <div id="boards-container"></div> 
     </div>
-    <button type="button" id="add-btn">+ new note</button>
+    <div id="conn_status"></div>
+    <button type="button" id="add-btn" style="visibility: hidden;">+ new note</button>
 
     <div class="note-container"></div>
         
@@ -52,13 +52,15 @@
             if(evt.target.id == 'add-btn') addNote()
             if(evt.target.id == 'save-btn') saveBoard()
             if(evt.target.classList == 'boards') {
-                console.log(evt.target)
                 
-            //fetchNotesForBoard(evt.target.getAttribute("data-id")); 
-            if(evt.target.getAttribute("data-id")) fetchNotesForBoard(evt.target.getAttribute("data-id"));
-            localStorage.setItem('board_id', evt.target.id)
-            connectWS()
-        }})
+                if(evt.target.getAttribute("data-id")){ 
+                    fetchNotesForBoard(evt.target.getAttribute("data-id"))
+                    localStorage.setItem('board_id', evt.target.id)
+                    document.querySelector("#add-btn").style.visibility = 'visible'
+                    connectWS()
+                }
+            }
+        })
 
 
         document.addEventListener('boardchange', () => {

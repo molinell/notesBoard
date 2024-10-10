@@ -7,8 +7,8 @@ function webSocket() {
     document.querySelector('#conn_status').innerHTML = "Connecting..."
     console.log("connecting...")
     // Create a WebSocket connection
-    //const socket = new WebSocket(`wss://${WS_URL}?access_token=${localStorage.getItem("jwt_token")}&boardId=${localStorage.getItem("board_id")}`); //`ws://localhost:8080?token=${WS_TOKEN}`
-    const socket = new WebSocket(`ws://localhost:8080?access_token=${localStorage.getItem("jwt_token")}&boardId=${localStorage.getItem("board_id")}`); //`ws://localhost:8080?token=${WS_TOKEN}`
+    const socket = new WebSocket(`wss://${WS_URL}?access_token=${localStorage.getItem("jwt_token")}&boardId=${localStorage.getItem("board_id")}`); //`ws://localhost:8080?token=${WS_TOKEN}`
+    //const socket = new WebSocket(`ws://localhost:8080?access_token=${localStorage.getItem("jwt_token")}&boardId=${localStorage.getItem("board_id")}`); //`ws://localhost:8080?token=${WS_TOKEN}`
     // Connection established 
     socket.onopen = function (event) {
         console.log('Connected to WebSocket server');

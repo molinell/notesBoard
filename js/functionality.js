@@ -2,7 +2,7 @@ import { webSocket } from './websocket.js'
 import { Events, NoteColors } from './utils.js';
 
 //const API_URL = "http://localhost:8088";
-const API_URL = "https://notes-board.azurewebsites.net/";
+const API_URL = "https://notes-board.azurewebsites.net";
 
 let SOCKET = null
 
@@ -131,35 +131,25 @@ function displayNotes(notes) {
     notesContainer.innerHTML = '';
 
     notes.forEach(note => {
-        const noteElement = document.createElement('div');
-        noteElement.id = `note${NOTE_COUNT}`; //tänker att själva idn är bara note1, note2 osv så när man lägger till en ny kommer den i följd
-        // Unique id for each note 
+        
+        notesContainer.innerHTML += `
+            <div id="note${++NOTE_COUNT}" class="notes">
+                <button type="button" class="rm-btn">✕</button>
+                <div id="note${NOTE_COUNT}-content" class="note-content">${note.note}</div>
+            </div>`
 
-        noteElement.innerHTML =
-            `<div id=outerwrap>
-            <div id=innerwrap>
-                 <div id="button-wrap">
-                    <button class="color-btn" data-color="red">❤️</button>
-                    <button class="color-btn" data-color="purple">💜</button>
-                    <button class="color-btn" data-color="blue">💙</button>
-                    <button class="del-btn">✖️</button>
-                 </div>
-                    <div id=box>
-                        <p id=notes>${note.note}</p>
-                    </div>
-            </div>
-         </div>`;
+        
+       const noteElement = document.querySelector(`#note${NOTE_COUNT}`)
 
-        noteElement.querySelectorAll('.color-btn').forEach(btn => {
-            btn.addEventListener('click', () =>
-                changeNoteColor(note.id, btn.dataset.color));
+        noteElement.style.top = note.positionT
+        noteElement.style.left = note.positionL
+        console.log("color: " + note.color)
+        noteElement.style.background = note.color
 
-            noteElement.querySelector('.del-btn').addEventListener('click', () => deleteNote(note.id))
+        //document.querySelector(`#note${NOTE_COUNT}-content`).background = 
 
-        });
         noteElement.setAttribute("data-modified", "false")
         noteElement.setAttribute("data-id", note.id) //sätter den egentliga idn som attribute
-        notesContainer.appendChild(noteElement);
     });
 }
 
@@ -235,35 +225,43 @@ async function fetchNotesForBoard(boardId) {
     }
 }
 
-/*async*/ function saveBoard() {
+async function saveBoard() {
     //Uncommenta sen när det finns en update metod
-    /*
+    
     document.querySelector('#save-btn').innerText = "saving..."
     const noteContainer = document.querySelector('.note-container')
 
     for (const child of noteContainer.children) {
         if (child.getAttribute('data-modified') == 'true') { 
             try {
-                const FETCH_URL = `${API_URL}/${localStorage.getItem('boardId')}/notes${ (!child.getAttribute('data-new')) ? "/"+child.getAttribute('data-id') : "" }` //lägger till idn om inte ny
+                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (!child.getAttribute('data-new')) ? "/" + child.getAttribute('data-id') : "" }` //lägger till idn om inte ny
                 const resp = await fetch( FETCH_URL , {
-                    method: ((child.getAttribute('data-new') == 'true') ? "POST" : "UPDATE"),
+                    method: ((child.getAttribute('data-new') == 'true') ? "POST" : "PUT"),
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        "note": child.querySelector(`${child.id}-content`).innerText,
+                        "note": document.querySelector(`#${child.id}-content`).innerText,
                         "color": child.style.background,
                         "positionT": child.style.top,
                         "positionL": child.style.left
                     })
                 })
-                console.log("Saving successfull for " + child.id)
+               /*console.log(child)
+               console.log(child.id)
+                console.log(document.querySelector(`#${child.id}-content`).innerText)*/
+                console.log("Saving successfull for " + child.id)*
+                console.log(FETCH_URL)
 
 
             } catch (error) {
                 console.error("Error occurred during saving", error);
+                document.querySelector('#save-btn').innerText = "An error occured during saving"
+                setTimeout(() => {
+                    document.querySelector('#save-btn').innerText = "save"
+                }, 5000)
             }
         }
-    }*/
-    console.log("saved")
+    }
+
     document.querySelector('#save-btn').innerText = "All changes saved!"
     setTimeout(() => {
         document.querySelector('#save-btn').remove()
