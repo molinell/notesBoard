@@ -250,6 +250,7 @@ function displayNotes(notes) {
 /*async*/ function saveBoard() {
     //Uncommenta sen när det finns en update metod
     /*
+    document.querySelector('#save-btn').innerText = "saving..."
     const noteContainer = document.querySelector('.note-container')
 
     for (const child of noteContainer.children) {
@@ -275,7 +276,11 @@ function displayNotes(notes) {
         }
     }*/
     console.log("saved")
-    document.querySelector('#save-btn').remove()
+    document.querySelector('#save-btn').innerText = "All changes saved!"
+    setTimeout(() => {
+        document.querySelector('#save-btn').remove()
+    }, 5000)
+    
 }
 
 function removeNote(elem) {
