@@ -157,9 +157,9 @@ function displayBoards(boards) {
     boards.forEach(board => {
         const boardElement = document.createElement("div");
     //behöver dynamsikt hitta hur många notes de finns
-
+    
     boardscontainer.innerHTML += `
-        <div>
+        <div class="boards" data-id="${board.id}">
        ${board.title}
         </div>`
 
@@ -178,10 +178,11 @@ function displayNoBoardsMessage() {
     const boardsContainer = document.getElementById("boards-container");
     boardsContainer.innerHTML = "<p>You have no boards. Create a board to get started!</p>";
 }
+
 // Function to fetch and display notes for a specific board
 async function fetchNotesForBoard(boardId) {
     try {
-        token = localStorage.getItem('token');
+        const token = localStorage.getItem('token');
 
         const notesResp = await fetch(`${API_URL}/boards/${boardId}/notes`, {
             method: "GET",

@@ -51,11 +51,12 @@
             if(evt.target.id == 'reconn-btn') connectWS()
             if(evt.target.id == 'add-btn') addNote()
             if(evt.target.id == 'save-btn') saveBoard()
-            if(evt.target.id == 'boards-container') {
-                // Vet ej hur ja ska fp boardID, den som e inne i DB
-                fetchNotesForBoard(boardId); 
-
+            if(evt.target.classList == 'boards') {
+                console.log(evt.target)
+            //fetchNotesForBoard(evt.target.getAttribute("data-id")); 
+            if(evt.target.getAttribute("data-id")) fetchNotesForBoard(evt.target.getAttribute("data-id"));
         }})
+
 
         document.addEventListener('boardchange', () => {
             
