@@ -230,13 +230,13 @@ async function saveBoard() {
     
     document.querySelector('#save-btn').innerText = "saving..."
     const noteContainer = document.querySelector('.note-container')
-
     const token = localStorage.getItem('jwt_token')
 
     for (const child of noteContainer.children) {
         if (child.getAttribute('data-modified') == 'true') { 
             try {
                 console.log("trying")
+                
                 const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (child.getAttribute('data-new') ==! "new") ? "/" + child.getAttribute('data-id') : "" }` //lägger till idn om inte ny
                 const resp = await fetch( FETCH_URL , {
                     method: ((child.getAttribute('data-new') == 'true') ? "POST" : "PUT"),
@@ -289,7 +289,6 @@ async function removeNote(elem) {
         event: Events.Remove,
         elemId: noteId,
     }));
-    const noteContainer = document.querySelector('.note-container')
     const token = localStorage.getItem('jwt_token')
 
     try{
