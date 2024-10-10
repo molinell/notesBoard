@@ -12,11 +12,7 @@ router.get('/', authorize, async (req,res) => {
 
     try{
         console.log("boards / GET")
-        const boards = await prisma.boards.findMany({
-            where: {
-                authorId: req.userData.sub
-              }
-        })
+        const boards = await prisma.boards.findMany()
         res.status(200).send({msg: `Boards for user ${req.userData.name} ` , boards: boards})
 
     } catch (error) {
@@ -110,5 +106,39 @@ router.post('/:boardId/notes', authorize, async (req, res) => {
     }
 });
 
+/*
+router.put('/:boardId/notes', authorize, async =>{
+    const { boardId } = req.params; // Get the board ID from the URL
+    const { note, color, positionT, positionL } = req.body; // Get the note content from the request body
+    
+    try {
+        const board = await prisma.boards.findUnique({
+            where: { id: boardId, authorId: req.userData.sub},
+        });
 
+        if (!board) {
+            return res.status(404).send({ msg: "Board not found or you don't have access to it" });
+        }
+
+        const updateNote = await prisma.notes.create({
+            where: {
+                id: req.params.id,
+            },
+            data: {
+                note: note,
+                authorId: req.userData.sub, // JWT ID
+                boardId: boardId, // Associate the note with the board
+                color: color,
+                positionT: positionT, 
+                positionL: positionL,
+
+            },
+        });
+
+        res.status(201).send({ msg: "Note updates", note: updateNote });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ msg: "Error updatning note" });
+    }
+*/
 module.exports = router

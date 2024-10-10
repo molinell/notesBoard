@@ -17,6 +17,7 @@ document.querySelector('#button-register').addEventListener('click', () =>{
 
 async function registerUser(username, password, email){
    const role = "user"
+   
    // Boards? 
     try {
         const resp = await fetch(`${API_URL}/users/register`, {
