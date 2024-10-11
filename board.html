@@ -31,7 +31,7 @@
 
     <script type="module">
         import { dragElement, addNote, editNote, removeNote, connectWS, saveBoard, fetchNotesForBoard, 
-            displayNotes, fetchBoards, displayBoards, displayNoBoardsMessage } from './js/functionality.js'
+            displayNotes, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor } from './js/functionality.js'
 
         //enklast såhär, att göra till global så att man kan endast dragga själva noten
         //window.dragElement = dragElement 
@@ -49,6 +49,9 @@
 
         document.addEventListener('click', (evt) => {
             if(evt.target.classList == 'rm-btn') removeNote(evt.target)
+            if(evt.target.classList == 'color1') changeColor(evt.target)
+            if(evt.target.classList == 'color2') changeColor(evt.target)
+            if(evt.target.classList == 'color3') changeColor(evt.target)
             if(evt.target.id == 'reconn-btn') connectWS()
             if(evt.target.id == 'add-btn') addNote()
             if(evt.target.id == 'save-btn') saveBoard()

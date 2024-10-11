@@ -98,7 +98,12 @@ function addNote() {
 
     document.querySelector(".note-container").innerHTML += `
     <div id="note${++NOTE_COUNT}" class="notes">
-            <button type="button" class="rm-btn">✕</button>
+             <div id=button-wrap>
+                <button type="button" class="color1" data-color="#b4d9ff">🧊</button>
+                <button type="button" class="color2" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                <button type="button" class="color3" data-color="#b9dfb1">🍵</button>
+                <button type="button" class="rm-btn">✕</button>
+            </div>
             <div id="note${NOTE_COUNT}-content" class="note-content"></div>
         </div>`
 
@@ -132,12 +137,18 @@ function displayNotes(notes) {
     notes.forEach(note => {
         
         notesContainer.innerHTML += `
+        
             <div id="note${++NOTE_COUNT}" class="notes">
+            <div id=button-wrap>
+                <button type="button" class="color1" data-color="#b4d9ff">🧊</button>
+                <button type="button" class="color2" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                <button type="button" class="color3" data-color="#b9dfb1">🍵</button>
                 <button type="button" class="rm-btn">✕</button>
+            </div>
                 <div id="note${NOTE_COUNT}-content" class="note-content">${note.note}</div>
             </div>`
 
-        
+        //
        const noteElement = document.querySelector(`#note${NOTE_COUNT}`)
 
         noteElement.style.top = note.positionT
@@ -218,7 +229,18 @@ async function fetchNotesForBoard(boardId) {
         console.error("Error fetching notes:", error);
     }
 }
+function changeColor(button){
+    //var note = button.parentElement;
+    const note = button.closest('.notes'); 
+    console.log("change color" + note);
 
+    const color = button.getAttribute('data-color');
+    console.log("color:" + color)
+    note.style.background = color; 
+
+    note.setAttribute("data-modified", "true"); 
+
+}
 async function saveBoard() {
     
     document.querySelector('#save-cont').innerHTML = "<p>saving...</p>"
@@ -311,4 +333,4 @@ function connectWS() {
     SOCKET = webSocket()
 }
 
-export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage }
+export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor}
