@@ -191,4 +191,10 @@ input[type="text"], input[type="password"] {
   border-radius: 0px;
   border: 2%;
   border-color: black;
+  margin-left: 20px;
+}
+
+#conn_status {
+  position: absolute;
+  top: 14%
 }
