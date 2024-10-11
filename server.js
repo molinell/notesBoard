@@ -1,8 +1,6 @@
 const WebSocket = require('ws')
-const os = require('os')
 require('dotenv').config()
 const jwt = require("jsonwebtoken")
-//const authorise = require("../middleware/auth")
 
 const PORT = process.env.PORT || 8080
 const wss = new WebSocket.Server({ port: PORT });
@@ -15,10 +13,10 @@ function authorise(urlParams) {
 
         console.log(`Token authorised for user ${userData.sub} ${userData.name}`)
 
-        return {status: 0, boardId: -1, userData: userData}
+        return {status: 0, userData: userData}
     } catch(err) {
         console.log(err)
-        return {status: 1, boardId:-1, userData: null}
+        return {status: 1, userData: null}
     }
 }
 
@@ -26,7 +24,7 @@ function authorise(urlParams) {
 wss.on('connection', (ws, req) => {
 
     const urlParams = new URLSearchParams(req.url.slice(1));
-    const {status, bid, userData} = authorise(urlParams)
+    const {status, userData} = authorise(urlParams)
     if(status == 1){
         ws.send(JSON.stringify({
             status: 1,
@@ -56,7 +54,6 @@ wss.on('connection', (ws, req) => {
             connClients: clients[boardId].size
          }));
         })
-    //console.log(`Client count: ${clients.size}`)
 
     ws.on('message', (message) => {
         
@@ -74,21 +71,18 @@ wss.on('connection', (ws, req) => {
     });
 
     ws.on('close', () => {
-        console.log("client closed connection: ")
         clients[boardId].delete(ws)
+  
+                clients[boardId].forEach(client => {
 
-        for(let i = 0; i < clients.size; i++){
-            clients[i].forEach(client => {
-                console.log(client)
-
-                /lient.send(JSON.stringify({
-                    msg: "",
-                    status: 0,
-                    event: "Connection",
-                    connClients: clients[i].size
-                 }));
-                })
-        }
+                    client.send(JSON.stringify({
+                        msg: "",
+                        status: 0,
+                        event: "Connection",
+                        connClients: clients[boardId].size
+                     }));
+                    })
+        
         
         console.log('Client disconnected');
     });
