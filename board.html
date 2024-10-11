@@ -23,6 +23,7 @@
     </div>
     <div id="conn_status"></div>
     <button type="button" id="add-btn" style="visibility: hidden;">+ new note</button>
+    <div id="save-cont"></div>
 
     <div class="note-container"></div>
         
@@ -65,8 +66,7 @@
 
         document.addEventListener('boardchange', () => {
             
-            if(!document.querySelector('#save-btn'))
-                document.body.innerHTML += `<button type="button" id="save-btn">save changes</button>`
+            document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">💾 save changes</button>`
         })
 
         document.addEventListener('mousedown', (evt) => {

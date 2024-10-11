@@ -7,8 +7,8 @@ function webSocket() {
     document.querySelector('#conn_status').innerHTML = "Connecting..."
     console.log("connecting...")
     // Create a WebSocket connection
-    const socket = new WebSocket(`wss://${WS_URL}?access_token=${localStorage.getItem("jwt_token")}&boardId=${localStorage.getItem("board_id")}`); //`ws://localhost:8080?token=${WS_TOKEN}`
-    //const socket = new WebSocket(`ws://localhost:8080?access_token=${localStorage.getItem("jwt_token")}&boardId=${localStorage.getItem("board_id")}`); //`ws://localhost:8080?token=${WS_TOKEN}`
+    //const socket = new WebSocket(`wss://${WS_URL}?access_token=${localStorage.getItem("jwt_token")}&boardId=${localStorage.getItem("board_id")}`); //`ws://localhost:8080?token=${WS_TOKEN}`
+    const socket = new WebSocket(`ws://localhost:8080?access_token=${localStorage.getItem("jwt_token")}&boardId=${localStorage.getItem("board_id")}`); //`ws://localhost:8080?token=${WS_TOKEN}`
     // Connection established 
     socket.onopen = function (event) {
         console.log('Connected to WebSocket server');
@@ -25,7 +25,7 @@ function webSocket() {
 
             switch (data.event) {
                 case Events.Connection: {
-                    document.querySelector('#conn_status').innerHTML = `${data.connClients} users on this board`
+                    document.querySelector('#conn_status').innerHTML = (data.connClients > 1) ? `${data.connClients} users on this board` : "You're all alone here"
                     break
                 }
 
@@ -40,7 +40,7 @@ function webSocket() {
                 case Events.Content: {
                     const elem = document.querySelector(`#${data.elemId}`)
                     elem.innerText = data.value
-                    elem.setAttribute("data-modified", "true")
+                    elem.parentElement.setAttribute("data-modified", "true")
                     break
                 }
 

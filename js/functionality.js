@@ -6,15 +6,15 @@ const API_URL = "https://notes-board.azurewebsites.net";
 
 let SOCKET = null
 
-let NOTE_COUNT = 0 //håller koll på hur många notes det finns displayade
+let NOTE_COUNT = 0
 
 const boardChange = new Event("boardchange") //custom event för när en note ändras
 
-//flytta på element (source: w3schools tutorial)
+//flytta på element (source: w3schools tutorial https://www.w3schools.com/howto/howto_js_draggable.asp)
 function dragElement(evt, elem) {
     var diffX = 0, diffY = 0, mouseOrigX = 0, mouseOrigY = 0;
     const ogTop = elem.style.top, ogLeft = elem.style.left
-    //elem.onmousedown = dragMouseDown;
+
     dragMouseDown(evt)
 
     function dragMouseDown(evt) {
@@ -66,8 +66,6 @@ function dragElement(evt, elem) {
             document.dispatchEvent(boardChange)
         } 
     }
-
-
 }
 
 function editNote(elem) {
@@ -75,7 +73,7 @@ function editNote(elem) {
     const ogText = elem.innerText;
     elem.contentEditable = true
     elem.focus()
-    //console.log(elem.id)
+
     elem.addEventListener('input', (evt) => {
         console.log(elem.innerText)
         SOCKET.send(JSON.stringify({
@@ -89,7 +87,7 @@ function editNote(elem) {
     elem.addEventListener('blur', () => {
         //loggar ändast ändringar om de faktist skett
         if(elem.innerText != ogText){
-            elem.setAttribute("data-modified", "true")
+            elem.parentElement.setAttribute("data-modified", "true")
             document.dispatchEvent(boardChange)
         } 
     })
@@ -110,7 +108,7 @@ function addNote() {
 
     newNote.style.top = '25%'
     newNote.style.left = '50%'
-    //newNote.style.transform = 'translate(50%, 50%)'
+    newNote.style.transform = 'translate(50%, 50%)'
     const noteColor = NoteColors[Math.floor(Math.random() * NoteColors.length)]
     newNote.style.background = noteColor
     newNote.setAttribute("data-new", "true")
@@ -121,11 +119,12 @@ function addNote() {
         noteColor: noteColor
     }))
 
-    editNote(document.querySelector(`#${newNote.id}-content`))
     document.dispatchEvent(boardChange)
+    editNote(document.querySelector(`#${newNote.id}-content`))
 }
 
 function displayNotes(notes) {
+    NOTE_COUNT = 0 //resetta notecount vid varje fetch då den inte triggar nån refresh
     // Display in separate divs 
     const notesContainer = document.querySelector('.note-container');
     notesContainer.innerHTML = '';
@@ -143,12 +142,8 @@ function displayNotes(notes) {
 
         noteElement.style.top = note.positionT
         noteElement.style.left = note.positionL
-        console.log("color: " + note.color)
         noteElement.style.background = note.color
 
-        //document.querySelector(`#note${NOTE_COUNT}-content`).background = 
-
-        noteElement.setAttribute("data-modified", "false")
         noteElement.setAttribute("data-id", note.id) //sätter den egentliga idn som attribute
     });
 }
@@ -188,7 +183,6 @@ function displayBoards(boards) {
        ${board.title}
         </div>`
     });
-    
 }
 
 
@@ -226,20 +220,19 @@ async function fetchNotesForBoard(boardId) {
 }
 
 async function saveBoard() {
-    //Uncommenta sen när det finns en update metod
     
-    document.querySelector('#save-btn').innerText = "saving..."
+    document.querySelector('#save-cont').innerHTML = "<p>saving...</p>"
     const noteContainer = document.querySelector('.note-container')
     const token = localStorage.getItem('jwt_token')
 
     for (const child of noteContainer.children) {
-        if (child.getAttribute('data-modified') == 'true') { 
+        if (child.getAttribute('data-modified') || child.getAttribute("data-new")) { 
             try {
                 console.log("trying")
-                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${ (child.getAttribute('data-new') != "true") ? "/" + child.getAttribute('data-id') : "/notes" }` //lägger till idn om inte ny
+                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/${ (!child.getAttribute('data-new')) ? child.getAttribute('data-id') : "notes" }` //lägger till idn om inte ny
                 //const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/notes`
                 const resp = await fetch( FETCH_URL , {
-                    method: ((child.getAttribute('data-new') == 'true') ? "POST" : "PUT"),
+                    method: ((child.getAttribute('data-new')) ? "POST" : "PUT"),
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
@@ -251,44 +244,51 @@ async function saveBoard() {
                         "positionL": child.style.left
                     })
                 })
-                console.log("got response")
-               /*console.log(child)
-               console.log(child.id)
-                console.log(document.querySelector(`#${child.id}-content`).innerText)*/
+
                 console.log("Saving successfull for " + child.id)
                 console.log(FETCH_URL)
                 if(!resp.ok){
                     console.error("Fetch error: " + resp.status + resp.statusText)
+                    console.error("Error occurred during saving", error);
+                    document.querySelector('#save-cont').innerHTML = "<p>Saving failed</p>"
+                    setTimeout(() => {
+                        document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">save changes</button>`
+                    }, 5000)
                 }
 
             } catch (error) {
                 console.error("Error occurred during saving", error);
-                document.querySelector('#save-btn').innerText = "An error occured during saving"
+                document.querySelector('#save-cont').innerHTML = "<p>Saving failed</p>"
                 setTimeout(() => {
-                    document.querySelector('#save-btn').innerText = "save"
+                    document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">save changes</button>`
                 }, 5000)
             }
-            child.setAttribute("data-modified", "false")
-            child.setAttribute("data-new", "false")
+            child.removeAttribute("data-modified")
+            child.removeAttribute("data-new")
         }
     }
 
-    document.querySelector('#save-btn').innerText = "All changes saved!"
+    document.querySelector('#save-cont').innerHTML = "<p>All changes saved!</p>"
     setTimeout(() => {
-        document.querySelector('#save-btn').remove()
+        document.querySelector('#save-cont').innerHTML = ""
     }, 5000)
     
 }
 
 async function removeNote(elem) {
     var note = elem.parentElement;
-    const noteId = note.getAttribute("data-id");  
-    console.log("Remove note: " + noteId);
 
     SOCKET.send(JSON.stringify({
         event: Events.Remove,
-        elemId: noteId,
+        elemId: note.id,
     }));
+    const noteId = note.getAttribute("data-id");
+    note.remove()
+
+    if(note.getAttribute("data-new")) return //early return om noten är ny och icke sparad
+
+    console.log("Remove note: " + noteId);
+
     const token = localStorage.getItem('jwt_token')
 
     try{
@@ -302,7 +302,6 @@ async function removeNote(elem) {
                     }})
     } catch(error){
         console.error("Error occurred during delete", error);
-
     }
 }
 
@@ -311,6 +310,5 @@ function connectWS() {
     if(SOCKET != null) SOCKET.close()
     SOCKET = webSocket()
 }
-//if(localStorage.getItem("board_id")) connectWS()
 
 export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage }
