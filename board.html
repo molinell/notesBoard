@@ -13,17 +13,14 @@
 
 <body> 
     <div id="err" style="color: red;"></div>
-    <!--<input id="button-show" type="button" value="Show boards and notes">
-    Laga eventListeners på varje board -> Onclick to displayNotesForBoard
-    
-    -->
+   
     <div id="board-wrap">
         <div id="board">Boards:</div>
         <div id="boards-container"></div> 
     </div>
-    <div id="conn_status"></div>
     <button type="button" id="add-btn" style="visibility: hidden;">+ new note</button>
     <div id="save-cont"></div>
+    <div id="conn_status"></div>
 
     <div class="note-container"></div>
         
@@ -31,14 +28,14 @@
 
     <script type="module">
         import { dragElement, addNote, editNote, removeNote, connectWS, saveBoard, fetchNotesForBoard, 
-            displayNotes, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor } from './js/functionality.js'
+            displayNotes, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor, colorBoard } from './js/functionality.js'
 
         //enklast såhär, att göra till global så att man kan endast dragga själva noten
         //window.dragElement = dragElement 
         
         const token = localStorage.getItem('jwt_token');
 
-    // Fetch the boards right away when the page loads
+        // Fetch the boards right away when the page loads
         document.addEventListener('DOMContentLoaded', () => {
             fetchBoards(token);  
       
@@ -62,13 +59,12 @@
                     localStorage.setItem('board_id', evt.target.id)
                     document.querySelector("#add-btn").style.visibility = 'visible'
                     connectWS()
+                    colorBoard(evt.target)
                 }
             }
         })
 
-
         document.addEventListener('boardchange', () => {
-            
             document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">💾 save changes</button>`
         })
 

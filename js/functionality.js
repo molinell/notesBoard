@@ -229,6 +229,7 @@ async function fetchNotesForBoard(boardId) {
         console.error("Error fetching notes:", error);
     }
 }
+
 function changeColor(button){
     //var note = button.parentElement;
     const note = button.closest('.notes'); 
@@ -240,6 +241,15 @@ function changeColor(button){
 
     note.setAttribute("data-modified", "true"); 
 
+}
+
+function colorBoard(board){
+    document.querySelectorAll('.boards').forEach(board => {
+        board.style.color = ''; 
+    });
+    const colors = ["#42f593", "#f542ad", "#42e3f5", "#f58a42", "#ef74fc", "#d9d36c"];
+
+    board.style.color = colors[Math.floor(Math.random() * colors.length)];
 }
 async function saveBoard() {
     
@@ -333,4 +343,4 @@ function connectWS() {
     SOCKET = webSocket()
 }
 
-export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor}
+export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor, colorBoard}
