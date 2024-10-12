@@ -1,4 +1,4 @@
-import { Events } from './utils.js';
+import { Events, NoteCount } from './utils.js';
 
 //JWT_TOKEN = localStorage.getItem('jwt_token')
 const WS_URL = 'womws-ayhkhrbua5bcdnbq.northeurope-01.azurewebsites.net'
@@ -24,12 +24,12 @@ function webSocket() {
             document.querySelector('#err').innerHTML = '';
 
             switch (data.event) {
-                case Events.Connection: {
+                case Events.CONNECTION: {
                     document.querySelector('#conn_status').innerHTML = (data.connClients > 1) ? `${data.connClients} users on this board` : "You're all alone here"
                     break
                 }
 
-                case Events.Move: {
+                case Events.MOVE: {
                     const elem = document.querySelector(`#${data.elemId}`)
                     elem.style.top = data.top
                     elem.style.left = data.left
@@ -37,18 +37,24 @@ function webSocket() {
                     break
                 }
 
-                case Events.Content: {
+                case Events.CONTENT: {
                     const elem = document.querySelector(`#${data.elemId}`)
                     elem.innerText = data.value
                     elem.parentElement.setAttribute("data-modified", "true")
                     break
                 }
 
-                case Events.Add: {
-                    document.querySelector(".note-container").innerHTML += `<div id="${data.elemId}" class="notes" onmousedown="dragElement(this)">
-                    <button type="button" class="rm-btn">✕</button>
-                    <div id="content${data.noteCount}" class="note-content"></div>
-                    </div>`
+                case Events.ADD: {
+                    document.querySelector(".note-container").innerHTML += `<div id="${data.elemId}" class="notes">
+                    <div id=button-wrap>
+                       <button type="button" class="color" data-color="#b4d9ff">🧊</button>
+                       <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                       <button type="button" class="color" data-color="#b9dfb1">🍵</button>
+                       <button type="button" class="color" data-color="#d5d1ff">🔮</button>
+                       <button type="button" class="rm-btn">✕</button>
+                   </div>
+                   <div id="${data.elemId}-content" class="note-content"></div>
+               </div>`
 
                     const newNote = document.querySelector(`#${data.elemId}`)
 
@@ -58,11 +64,20 @@ function webSocket() {
                     newNote.style.background = data.noteColor
                     newNote.setAttribute("data-new", "true")
                     console.log("Added new note")
+                    NoteCount.add() //ökar allas notecount
                     break
                 }
 
-                case Events.Remove: {
+                case Events.REMOVE: {
                     document.querySelector(`#${data.elemId}`).remove()
+                    break
+                }
+
+                case Events.COLOR: {
+                    const elem = document.querySelector(`#${data.elemId}`)
+                    elem.style.background = data.color
+                    elem.setAttribute("data-modified", "true")
+                    break
                 }
 
                 default:

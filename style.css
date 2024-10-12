@@ -73,7 +73,7 @@ body {
           
 }
 
-.color1, .color2, .color3{
+.color{
   border: none;
   background: none;
   cursor: pointer;
@@ -196,5 +196,5 @@ input[type="text"], input[type="password"] {
 
 #conn_status {
   position: absolute;
-  top: 14%
+  top: 97px
 }

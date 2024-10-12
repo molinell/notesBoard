@@ -1,12 +1,12 @@
 import { webSocket } from './websocket.js'
-import { Events, NoteColors } from './utils.js';
+import { Events, NoteColors, NoteCount } from './utils.js';
 
 //const API_URL = "http://localhost:8088";
 const API_URL = "https://notes-board.azurewebsites.net";
 
 let SOCKET = null
 
-let NOTE_COUNT = 0
+//let NOTE_COUNT = 0
 
 const boardChange = new Event("boardchange") //custom event för när en note ändras
 
@@ -48,7 +48,7 @@ function dragElement(evt, elem) {
 
         //sicka härifrån note positionen till ws
         SOCKET.send(JSON.stringify({
-            event: Events.Move,
+            event: Events.MOVE,
             elemId: elem.id,
             top: elem.style.top,
             left: elem.style.left
@@ -77,7 +77,7 @@ function editNote(elem) {
     elem.addEventListener('input', (evt) => {
         console.log(elem.innerText)
         SOCKET.send(JSON.stringify({
-            event: Events.Content,
+            event: Events.CONTENT,
             elemId: elem.id,
             value: elem.innerText
         }));
@@ -97,17 +97,18 @@ function addNote() {
     console.log("new note")
 
     document.querySelector(".note-container").innerHTML += `
-    <div id="note${++NOTE_COUNT}" class="notes">
+    <div id="note${NoteCount.add()}" class="notes">
              <div id=button-wrap>
-                <button type="button" class="color1" data-color="#b4d9ff">🧊</button>
-                <button type="button" class="color2" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
-                <button type="button" class="color3" data-color="#b9dfb1">🍵</button>
+                <button type="button" class="color" data-color="#b4d9ff">🧊</button>
+                <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                <button type="button" class="color" data-color="#b9dfb1">🍵</button>
+                <button type="button" class="color" data-color="#d5d1ff">🔮</button>
                 <button type="button" class="rm-btn">✕</button>
             </div>
-            <div id="note${NOTE_COUNT}-content" class="note-content"></div>
+            <div id="note${NoteCount.COUNT}-content" class="note-content"></div>
         </div>`
 
-    const newNote = document.querySelector(`#note${NOTE_COUNT}`)
+    const newNote = document.querySelector(`#note${NoteCount.COUNT}`)
 
     console.log("added note " + newNote.id)
 
@@ -118,9 +119,9 @@ function addNote() {
     newNote.style.background = noteColor
     newNote.setAttribute("data-new", "true")
     SOCKET.send(JSON.stringify({
-        event: Events.Add,
+        event: Events.ADD,
         elemId: newNote.id,
-        noteCount: NOTE_COUNT,
+        noteCount: NoteCount.COUNT,
         noteColor: noteColor
     }))
 
@@ -129,7 +130,7 @@ function addNote() {
 }
 
 function displayNotes(notes) {
-    NOTE_COUNT = 0 //resetta notecount vid varje fetch då den inte triggar nån refresh
+    NoteCount.reset() //resetta notecount vid varje fetch då den inte triggar nån refresh
     // Display in separate divs 
     const notesContainer = document.querySelector('.note-container');
     notesContainer.innerHTML = '';
@@ -138,25 +139,30 @@ function displayNotes(notes) {
         
         notesContainer.innerHTML += `
         
-            <div id="note${++NOTE_COUNT}" class="notes">
+            <div id="note${NoteCount.add()}" class="notes">
             <div id=button-wrap>
-                <button type="button" class="color1" data-color="#b4d9ff">🧊</button>
-                <button type="button" class="color2" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
-                <button type="button" class="color3" data-color="#b9dfb1">🍵</button>
+                <button type="button" class="color" data-color="#b4d9ff">🧊</button>
+                <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                <button type="button" class="color" data-color="#b9dfb1">🍵</button>
+                <button type="button" class="color" data-color="#d5d1ff">🔮</button>
                 <button type="button" class="rm-btn">✕</button>
             </div>
-                <div id="note${NOTE_COUNT}-content" class="note-content">${note.note}</div>
+                <div id="note${NoteCount.COUNT}-content" class="note-content">${note.note}</div>
             </div>`
 
         //
-       const noteElement = document.querySelector(`#note${NOTE_COUNT}`)
+       const noteElement = document.querySelector(`#note${NoteCount.COUNT}`)
 
         noteElement.style.top = note.positionT
         noteElement.style.left = note.positionL
         noteElement.style.background = note.color
 
         noteElement.setAttribute("data-id", note.id) //sätter den egentliga idn som attribute
+
     });
+
+    document.querySelector("#add-btn").style.visibility = 'visible'
+    connectWS() //connecta till ws när alla notear är displayade färdigt
 }
 
 async function fetchBoards(token) {
@@ -232,8 +238,9 @@ async function fetchNotesForBoard(boardId) {
 
 function changeColor(button){
     //var note = button.parentElement;
-    const note = button.closest('.notes'); 
-    console.log("change color" + note);
+    //const note = button.closest('.notes'); 
+    const note = button.parentElement.parentElement
+    console.log("change color" + note.id);
 
     const color = button.getAttribute('data-color');
     console.log("color:" + color)
@@ -241,6 +248,13 @@ function changeColor(button){
 
     note.setAttribute("data-modified", "true"); 
 
+    SOCKET.send(JSON.stringify({
+        event: Events.COLOR,
+        elemId: note.id,
+        color: color
+    }))
+
+    document.dispatchEvent(boardChange)
 }
 
 function colorBoard(board){
@@ -308,10 +322,10 @@ async function saveBoard() {
 }
 
 async function removeNote(elem) {
-    var note = elem.parentElement;
+    var note = elem.parentElement.parentElement;
 
     SOCKET.send(JSON.stringify({
-        event: Events.Remove,
+        event: Events.REMOVE,
         elemId: note.id,
     }));
     const noteId = note.getAttribute("data-id");
