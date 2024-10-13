@@ -7,7 +7,8 @@ const Events = Object.freeze({
     CONTENT: "Content", //Innehållet ändrade
     ADD: "Add", //ny note
     REMOVE: "Remove",
-    COLOR : "Color" //byte av färg
+    COLOR : "Color", //byte av färg
+    SAVE: "Save" //någon spara boarden
 })
 
 const NoteColors = [

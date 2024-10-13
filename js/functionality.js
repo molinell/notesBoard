@@ -95,8 +95,9 @@ function editNote(elem) {
 
 function addNote() {
     console.log("new note")
+    const uniqueId = `note${NoteCount.add()}-${Date.now()}`
 
-    document.querySelector(".note-container").innerHTML += `
+    /*document.querySelector(".note-container").innerHTML += `
     <div id="note${NoteCount.add()}" class="notes">
              <div id=button-wrap>
                 <button type="button" class="color" data-color="#b4d9ff">🧊</button>
@@ -106,9 +107,21 @@ function addNote() {
                 <button type="button" class="rm-btn">✕</button>
             </div>
             <div id="note${NoteCount.COUNT}-content" class="note-content"></div>
-        </div>`
+        </div>`*/
+    
+        document.querySelector(".note-container").innerHTML += `
+        <div id="${uniqueId}" class="notes">
+                 <div id=button-wrap>
+                    <button type="button" class="color" data-color="#b4d9ff">🧊</button>
+                    <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                    <button type="button" class="color" data-color="#b9dfb1">🍵</button>
+                    <button type="button" class="color" data-color="#d5d1ff">🔮</button>
+                    <button type="button" class="rm-btn">✕</button>
+                </div>
+                <div id="${uniqueId}-content" class="note-content"></div>
+            </div>`
 
-    const newNote = document.querySelector(`#note${NoteCount.COUNT}`)
+    const newNote = document.querySelector(`#${uniqueId}`)
 
     console.log("added note " + newNote.id)
 
@@ -270,13 +283,13 @@ async function saveBoard() {
     document.querySelector('#save-cont').innerHTML = "<p>saving...</p>"
     const noteContainer = document.querySelector('.note-container')
     const token = localStorage.getItem('jwt_token')
+    let savedNotes = {}
 
     for (const child of noteContainer.children) {
-        if (child.getAttribute('data-modified') || child.getAttribute("data-new")) { 
+        //Sparar ändast såna med ändringar, skippar dom man inte själv har adda
+        if ((child.getAttribute('data-modified') || child.getAttribute("data-new")) && child.getAttribute("data-pending-save") != "true") { 
             try {
-                console.log("trying")
                 const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/${ (!child.getAttribute('data-new')) ? child.getAttribute('data-id') : "notes" }` //lägger till idn om inte ny
-                //const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/notes`
                 const resp = await fetch( FETCH_URL , {
                     method: ((child.getAttribute('data-new')) ? "POST" : "PUT"),
                     headers: {
@@ -291,15 +304,21 @@ async function saveBoard() {
                     })
                 })
 
-                console.log("Saving successfull for " + child.id)
-                console.log(FETCH_URL)
                 if(!resp.ok){
                     console.error("Fetch error: " + resp.status + resp.statusText)
-                    console.error("Error occurred during saving", error);
                     document.querySelector('#save-cont').innerHTML = "<p>Saving failed</p>"
                     setTimeout(() => {
                         document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">save changes</button>`
                     }, 5000)
+                } else {
+                    console.log("Saving successfull for " + child.id)
+                    const respData = await resp.json();
+                    child.setAttribute("data-id", respData.note.id) 
+
+                    savedNotes[child.id] = respData.note.id
+
+                    child.removeAttribute("data-modified")
+                    child.removeAttribute("data-new")
                 }
 
             } catch (error) {
@@ -309,10 +328,13 @@ async function saveBoard() {
                     document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">save changes</button>`
                 }, 5000)
             }
-            child.removeAttribute("data-modified")
-            child.removeAttribute("data-new")
         }
     }
+
+    SOCKET.send(JSON.stringify({
+        event: Events.SAVE,
+        savedNotes: savedNotes
+    }))
 
     document.querySelector('#save-cont').innerHTML = "<p>All changes saved!</p>"
     setTimeout(() => {
@@ -326,12 +348,12 @@ async function removeNote(elem) {
 
     SOCKET.send(JSON.stringify({
         event: Events.REMOVE,
-        elemId: note.id,
+        elemId: note.id
     }));
     const noteId = note.getAttribute("data-id");
     note.remove()
 
-    if(note.getAttribute("data-new")) return //early return om noten är ny och icke sparad
+    if(note.getAttribute("data-new") || note.getAttribute("data-pending-save")) return //early return om noten är ny och icke sparad
 
     console.log("Remove note: " + noteId);
 

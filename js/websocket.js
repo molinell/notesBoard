@@ -31,16 +31,16 @@ function webSocket() {
 
                 case Events.MOVE: {
                     const elem = document.querySelector(`#${data.elemId}`)
+                    if(elem == null) break
                     elem.style.top = data.top
                     elem.style.left = data.left
-                    elem.setAttribute("data-modified", "true")
                     break
                 }
 
                 case Events.CONTENT: {
                     const elem = document.querySelector(`#${data.elemId}`)
+                    if(elem == null) break
                     elem.innerText = data.value
-                    elem.parentElement.setAttribute("data-modified", "true")
                     break
                 }
 
@@ -62,21 +62,36 @@ function webSocket() {
                     newNote.style.left = '50%'
                     newNote.style.transform = 'translate(50%, 50%)'
                     newNote.style.background = data.noteColor
-                    newNote.setAttribute("data-new", "true")
+                    newNote.setAttribute("data-pending-save", "true") //någon annan adda och ansvarar av att spara
                     console.log("Added new note")
                     NoteCount.add() //ökar allas notecount
                     break
                 }
 
                 case Events.REMOVE: {
-                    document.querySelector(`#${data.elemId}`).remove()
+                    const elem = document.querySelector(`#${data.elemId}`)
+                    if(elem == null) break
+                    elem.remove()
                     break
                 }
 
                 case Events.COLOR: {
                     const elem = document.querySelector(`#${data.elemId}`)
+                    if(elem == null) break
                     elem.style.background = data.color
-                    elem.setAttribute("data-modified", "true")
+                    break
+                }
+
+                case Events.SAVE: {
+                    console.log("saving")
+                    for(const [elemId, dataId] of Object.entries(data.savedNotes)){
+                        console.log(elemId+ " : " + dataId)
+                        const elem = document.querySelector(`#${elemId}`)
+                        if(elem == null) continue
+                        elem.setAttribute("data-id", dataId)
+                        elem.removeAttribute("data-modified")
+                        elem.removeAttribute("data-pending-save")
+                    }
                     break
                 }
 
