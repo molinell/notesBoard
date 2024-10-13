@@ -1,14 +1,14 @@
 /**
-* "enum" för typer av event som kan ske som sickas till ws
+* "enum" for event types that are sent over ws
 */
 const Events = Object.freeze({
-    CONNECTION: "Connection", //ny ws client, denna sickas främst från servern
-    MOVE: "Move", //Noten flyttades
-    CONTENT: "Content", //Innehållet ändrade
-    ADD: "Add", //ny note
+    CONNECTION: "Connection", //New ws client, mostly sent by server
+    MOVE: "Move", //Note was moved
+    CONTENT: "Content", //Content of a note was changed
+    ADD: "Add", //New note
     REMOVE: "Remove",
-    COLOR : "Color", //byte av färg
-    SAVE: "Save" //någon spara boarden
+    COLOR : "Color", //Note changed color
+    SAVE: "Save" //Board was saved
 })
 
 const NoteColors = [

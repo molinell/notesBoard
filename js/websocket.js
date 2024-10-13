@@ -1,6 +1,5 @@
 import { Events, NoteCount } from './utils.js';
 
-//JWT_TOKEN = localStorage.getItem('jwt_token')
 const WS_URL = 'womws-ayhkhrbua5bcdnbq.northeurope-01.azurewebsites.net'
 
 function webSocket() {
@@ -34,6 +33,7 @@ function webSocket() {
                     if(elem == null) break
                     elem.style.top = data.top
                     elem.style.left = data.left
+                    elem.setAttribute("data-modified", "true")
                     break
                 }
 
@@ -41,20 +41,22 @@ function webSocket() {
                     const elem = document.querySelector(`#${data.elemId}`)
                     if(elem == null) break
                     elem.innerText = data.value
+                    elem.setAttribute("data-modified", "true")
                     break
                 }
 
                 case Events.ADD: {
-                    document.querySelector(".note-container").innerHTML += `<div id="${data.elemId}" class="notes">
-                    <div id=button-wrap>
-                       <button type="button" class="color" data-color="#b4d9ff">🧊</button>
-                       <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
-                       <button type="button" class="color" data-color="#b9dfb1">🍵</button>
-                       <button type="button" class="color" data-color="#d5d1ff">🔮</button>
-                       <button type="button" class="rm-btn">✕</button>
-                   </div>
-                   <div id="${data.elemId}-content" class="note-content"></div>
-               </div>`
+                    document.querySelector(".note-container").innerHTML += `
+                    <div id="${data.elemId}" class="notes">
+                        <div id=button-wrap>
+                            <button type="button" class="color" data-color="#b4d9ff">🧊</button>
+                            <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                            <button type="button" class="color" data-color="#b9dfb1">🍵</button>
+                            <button type="button" class="color" data-color="#d5d1ff">🔮</button>
+                            <button type="button" class="rm-btn">✕</button>
+                        </div>
+                        <div id="${data.elemId}-content" class="note-content"></div>
+                    </div>`
 
                     const newNote = document.querySelector(`#${data.elemId}`)
 
@@ -62,9 +64,9 @@ function webSocket() {
                     newNote.style.left = '50%'
                     newNote.style.transform = 'translate(50%, 50%)'
                     newNote.style.background = data.noteColor
-                    newNote.setAttribute("data-pending-save", "true") //någon annan adda och ansvarar av att spara
+                    newNote.setAttribute("data-new", "true")
                     console.log("Added new note")
-                    NoteCount.add() //ökar allas notecount
+                    NoteCount.add() //Increase everyones notecount
                     break
                 }
 
@@ -79,6 +81,7 @@ function webSocket() {
                     const elem = document.querySelector(`#${data.elemId}`)
                     if(elem == null) break
                     elem.style.background = data.color
+                    elem.setAttribute("data-modified", "true")
                     break
                 }
 
@@ -90,8 +93,12 @@ function webSocket() {
                         if(elem == null) continue
                         elem.setAttribute("data-id", dataId)
                         elem.removeAttribute("data-modified")
-                        elem.removeAttribute("data-pending-save")
+                        elem.removeAttribute("data-new")
                     }
+                    document.querySelector('#save-cont').innerHTML = "<p>All changes saved!</p>"
+                    setTimeout(() => {
+                        document.querySelector('#save-cont').innerHTML = ""
+                    }, 5000)
                     break
                 }
 

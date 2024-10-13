@@ -6,11 +6,9 @@ const API_URL = "https://notes-board.azurewebsites.net";
 
 let SOCKET = null
 
-//let NOTE_COUNT = 0
+const boardChange = new Event("boardchange") //custom event for when a note is changed
 
-const boardChange = new Event("boardchange") //custom event för när en note ändras
-
-//flytta på element (source: w3schools tutorial https://www.w3schools.com/howto/howto_js_draggable.asp)
+//Move an element (source: w3schools tutorial https://www.w3schools.com/howto/howto_js_draggable.asp)
 function dragElement(evt, elem) {
     var diffX = 0, diffY = 0, mouseOrigX = 0, mouseOrigY = 0;
     const ogTop = elem.style.top, ogLeft = elem.style.left
@@ -21,14 +19,14 @@ function dragElement(evt, elem) {
         evt = evt //|| window.event;
         evt.preventDefault();
 
-        //musposition när man först trycker på noten
+        //Mouse position when first pressing note
         mouseOrigX = evt.clientX;
         mouseOrigY = evt.clientY;
 
-        //musläpp --> sluta
+        // --> stop dragging
         document.onmouseup = closeDragElement;
 
-        //Musflytt --> flytta på elementet
+        //--> move an element
         document.onmousemove = elementDrag;
     }
 
@@ -36,17 +34,16 @@ function dragElement(evt, elem) {
         evt = evt //|| window.event;
         evt.preventDefault();
 
-        //räkna skillnaden mellan föregående och nuvarande musposition
+        //Differece between previous and current mouse position
         diffX = mouseOrigX - evt.clientX;
         diffY = mouseOrigY - evt.clientY;
         mouseOrigX = evt.clientX;
         mouseOrigY = evt.clientY;
 
-        //räkna nya positionen till elementet
+        //New position for the element
         elem.style.top = (elem.offsetTop - diffY) + "px";
         elem.style.left = (elem.offsetLeft - diffX) + "px";
 
-        //sicka härifrån note positionen till ws
         SOCKET.send(JSON.stringify({
             event: Events.MOVE,
             elemId: elem.id,
@@ -56,11 +53,11 @@ function dragElement(evt, elem) {
     }
 
     function closeDragElement() {
-        //sluta allt när musen släpps
+        //Stop when mouse is released
         document.onmouseup = null;
         document.onmousemove = null;
 
-        //loggar ändast ändringar om de faktist skett
+        //Only log event if an actual change has occurred
         if(elem.style.top != ogTop && elem.style.left != ogLeft){
             elem.setAttribute("data-modified", "true")
             document.dispatchEvent(boardChange)
@@ -68,8 +65,8 @@ function dragElement(evt, elem) {
     }
 }
 
+
 function editNote(elem) {
-    console.log("double click")
     const ogText = elem.innerText;
     elem.contentEditable = true
     elem.focus()
@@ -85,7 +82,7 @@ function editNote(elem) {
     
     
     elem.addEventListener('blur', () => {
-        //loggar ändast ändringar om de faktist skett
+        //Only log event if an actual change has occurred
         if(elem.innerText != ogText){
             elem.parentElement.setAttribute("data-modified", "true")
             document.dispatchEvent(boardChange)
@@ -94,20 +91,7 @@ function editNote(elem) {
 }
 
 function addNote() {
-    console.log("new note")
     const uniqueId = `note${NoteCount.add()}-${Date.now()}`
-
-    /*document.querySelector(".note-container").innerHTML += `
-    <div id="note${NoteCount.add()}" class="notes">
-             <div id=button-wrap>
-                <button type="button" class="color" data-color="#b4d9ff">🧊</button>
-                <button type="button" class="color" data-color="#f5bfbf">🌷͙֒</button>
-                <button type="button" class="color" data-color="#b9dfb1">🍵</button>
-                <button type="button" class="color" data-color="#d5d1ff">🔮</button>
-                <button type="button" class="rm-btn">✕</button>
-            </div>
-            <div id="note${NoteCount.COUNT}-content" class="note-content"></div>
-        </div>`*/
     
         document.querySelector(".note-container").innerHTML += `
         <div id="${uniqueId}" class="notes">
@@ -122,8 +106,6 @@ function addNote() {
             </div>`
 
     const newNote = document.querySelector(`#${uniqueId}`)
-
-    console.log("added note " + newNote.id)
 
     newNote.style.top = '25%'
     newNote.style.left = '50%'
@@ -143,7 +125,7 @@ function addNote() {
 }
 
 function displayNotes(notes) {
-    NoteCount.reset() //resetta notecount vid varje fetch då den inte triggar nån refresh
+    NoteCount.reset()
     // Display in separate divs 
     const notesContainer = document.querySelector('.note-container');
     notesContainer.innerHTML = '';
@@ -170,12 +152,12 @@ function displayNotes(notes) {
         noteElement.style.left = note.positionL
         noteElement.style.background = note.color
 
-        noteElement.setAttribute("data-id", note.id) //sätter den egentliga idn som attribute
+        noteElement.setAttribute("data-id", note.id) //Actual ID (in db) as an attribute
 
     });
 
     document.querySelector("#add-btn").style.visibility = 'visible'
-    connectWS() //connecta till ws när alla notear är displayade färdigt
+    connectWS() //connect to ws once all notes are displayed
 }
 
 async function fetchBoards(token) {
@@ -250,23 +232,19 @@ async function fetchNotesForBoard(boardId) {
 }
 
 function changeColor(button){
-    //var note = button.parentElement;
-    //const note = button.closest('.notes'); 
     const note = button.parentElement.parentElement
-    console.log("change color" + note.id);
 
     const color = button.getAttribute('data-color');
-    console.log("color:" + color)
     note.style.background = color; 
-
-    note.setAttribute("data-modified", "true"); 
+ 
+    note.setAttribute("data-modified", "true");
 
     SOCKET.send(JSON.stringify({
         event: Events.COLOR,
         elemId: note.id,
         color: color
     }))
-
+  
     document.dispatchEvent(boardChange)
 }
 
@@ -286,8 +264,8 @@ async function saveBoard() {
     let savedNotes = {}
 
     for (const child of noteContainer.children) {
-        //Sparar ändast såna med ändringar, skippar dom man inte själv har adda
-        if ((child.getAttribute('data-modified') || child.getAttribute("data-new")) && child.getAttribute("data-pending-save") != "true") { 
+        //Only save those with modifications / new
+        if (child.getAttribute('data-modified') || child.getAttribute("data-new")) {
             try {
                 const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/${ (!child.getAttribute('data-new')) ? child.getAttribute('data-id') : "notes" }` //lägger till idn om inte ny
                 const resp = await fetch( FETCH_URL , {
@@ -313,7 +291,7 @@ async function saveBoard() {
                 } else {
                     console.log("Saving successfull for " + child.id)
                     const respData = await resp.json();
-                    child.setAttribute("data-id", respData.note.id) 
+                    if(child.getAttribute("data-new"))child.setAttribute("data-id", respData.note.id) 
 
                     savedNotes[child.id] = respData.note.id
 
@@ -353,7 +331,7 @@ async function removeNote(elem) {
     const noteId = note.getAttribute("data-id");
     note.remove()
 
-    if(note.getAttribute("data-new") || note.getAttribute("data-pending-save")) return //early return om noten är ny och icke sparad
+    if(note.getAttribute("data-new")) return //early return if note is unsaved
 
     console.log("Remove note: " + noteId);
 
