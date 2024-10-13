@@ -7,6 +7,9 @@
     <title>Notes</title>
 </head>
 <body>
+    <div id="notification" class="hidden">Registration Successful!</div>
+
+
     <div id=con>
         <div id="innerCon1">
             <h3 id="title"> LOG IN </h3>
@@ -28,7 +31,7 @@
     <script type = "module" src="./js/functionality.js"></script> -->
 
     <script type="module"> //module kanske inte behövs
-        import { registerUser, logIn } from './js/users.js'
+        import { registerUser, logIn, showNotification } from './js/users.js'
 
         document.addEventListener('click', (evt) => {
             if(evt.target.id == 'button-login') {
