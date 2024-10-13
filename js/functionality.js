@@ -101,7 +101,7 @@ function addNote() {
     <div id="note${NoteCount.add()}" class="notes">
              <div id=button-wrap>
                 <button type="button" class="color" data-color="#b4d9ff">🧊</button>
-                <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                <button type="button" class="color" data-color="#f5bfbf">🌷͙֒</button>
                 <button type="button" class="color" data-color="#b9dfb1">🍵</button>
                 <button type="button" class="color" data-color="#d5d1ff">🔮</button>
                 <button type="button" class="rm-btn">✕</button>
@@ -113,7 +113,7 @@ function addNote() {
         <div id="${uniqueId}" class="notes">
                  <div id=button-wrap>
                     <button type="button" class="color" data-color="#b4d9ff">🧊</button>
-                    <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                    <button type="button" class="color" data-color="#f5bfbf">🌷͙֒</button>
                     <button type="button" class="color" data-color="#b9dfb1">🍵</button>
                     <button type="button" class="color" data-color="#d5d1ff">🔮</button>
                     <button type="button" class="rm-btn">✕</button>
@@ -155,7 +155,7 @@ function displayNotes(notes) {
             <div id="note${NoteCount.add()}" class="notes">
             <div id=button-wrap>
                 <button type="button" class="color" data-color="#b4d9ff">🧊</button>
-                <button type="button" class="color" data-color="#f5bfbf">𓍢ִ໋🌷͙֒</button>
+                <button type="button" class="color" data-color="#f5bfbf">🌷͙֒</button>
                 <button type="button" class="color" data-color="#b9dfb1">🍵</button>
                 <button type="button" class="color" data-color="#d5d1ff">🔮</button>
                 <button type="button" class="rm-btn">✕</button>

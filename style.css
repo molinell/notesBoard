@@ -37,9 +37,10 @@ body {
     height: 100%;*/
     position: relative;
 
-    height: 95%;
+    height: 83%;
     width: 95%;
     margin-left: 6.25px;
+    padding-top: 10px;
 
     /*max-width: 90px;
     max-height: 90px;*/
@@ -47,13 +48,14 @@ body {
     /*display: flex;
     justify-content: center;
     align-items: center;*/
-
     overflow: scroll;
     word-wrap: break-word;
 
     cursor: text;
 
     background: inherit;
+    background-color: rgba(0,0,0,0.05);
+
   }
 
 
@@ -68,8 +70,10 @@ body {
   display: flex;                                   
   justify-content: flex-end;    
   width: 50%;
-  margin-top: -20px;
-  margin-left: -5px;                   
+  margin-top: -33px;
+  margin-left: 20px;  
+  padding-bottom: 10px;  
+  padding-top: 20px;               
           
 }
 
