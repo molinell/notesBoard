@@ -262,12 +262,13 @@ async function saveBoard() {
     const noteContainer = document.querySelector('.note-container')
     const token = localStorage.getItem('jwt_token')
     let savedNotes = {}
+    let saveSuccess = true
 
     for (const child of noteContainer.children) {
         //Only save those with modifications / new
         if (child.getAttribute('data-modified') || child.getAttribute("data-new")) {
             try {
-                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/${ (!child.getAttribute('data-new')) ? child.getAttribute('data-id') : "notes" }` //lägger till idn om inte ny
+                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/${ (!child.getAttribute('data-new')) ? child.getAttribute('data-id') : "notes" }` /* /noteID if not new, else /notes */
                 const resp = await fetch( FETCH_URL , {
                     method: ((child.getAttribute('data-new')) ? "POST" : "PUT"),
                     headers: {
@@ -284,10 +285,12 @@ async function saveBoard() {
 
                 if(!resp.ok){
                     console.error("Fetch error: " + resp.status + resp.statusText)
+                    saveSuccess = false
                     document.querySelector('#save-cont').innerHTML = "<p>Saving failed</p>"
                     setTimeout(() => {
                         document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">save changes</button>`
                     }, 5000)
+                    break
                 } else {
                     console.log("Saving successfull for " + child.id)
                     const respData = await resp.json();
@@ -301,6 +304,7 @@ async function saveBoard() {
 
             } catch (error) {
                 console.error("Error occurred during saving", error);
+                saveSuccess = false
                 document.querySelector('#save-cont').innerHTML = "<p>Saving failed</p>"
                 setTimeout(() => {
                     document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">save changes</button>`
@@ -309,15 +313,22 @@ async function saveBoard() {
         }
     }
 
-    SOCKET.send(JSON.stringify({
-        event: Events.SAVE,
-        savedNotes: savedNotes
-    }))
+    //Only send if any notes where successfully saved
+    if(Object.keys(savedNotes).length > 0){
+        SOCKET.send(JSON.stringify({
+            event: Events.SAVE,
+            savedNotes: savedNotes
+        }))
+    }
+    
 
-    document.querySelector('#save-cont').innerHTML = "<p>All changes saved!</p>"
-    setTimeout(() => {
-        document.querySelector('#save-cont').innerHTML = ""
-    }, 5000)
+    if(saveSuccess){
+        document.querySelector('#save-cont').innerHTML = "<p>All changes saved!</p>"
+        setTimeout(() => {
+            document.querySelector('#save-cont').innerHTML = ""
+        }, 5000)
+    }
+    
     
 }
 
