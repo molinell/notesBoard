@@ -1,8 +1,6 @@
 
 #@apiURL=http://localhost:8088
 
-#Tidigare tog han även bort nå mer från post metoden
-#Har endast email och password (här och frtonend)
 @apiURL={{$dotenv API_URL}}
 @token={{$dotenv TEMP_TOKEN}}
 

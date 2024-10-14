@@ -24,12 +24,8 @@ app.get('/', (req, res) => {
     res.send("<h1>Hello!! with CORS</h1>") // Detta syns is 8088 ej live server
 })
 
-// Behövs för att man ska kunna ta emot JSON i req.body
-// Allt här efter bli till JSON pga app.use
+// Behövs för att man ska kunna ta emot JSON i req.body. Allt här efter bli till JSON pga app.use
 app.use(express.json()) 
-
-const notesRouter = require('./routes/notes')
-app.use('/notes', notesRouter)  
 
 const usersRouter = require('./routes/users')
 app.use('/users', usersRouter) 

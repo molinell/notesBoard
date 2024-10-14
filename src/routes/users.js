@@ -28,7 +28,6 @@ router.get('/profile', authorize, async (req,res) => {
 
 router.post('/register', async (req, res) => {
     console.log(req.body)
-    // https://www.npmjs.com/package/bcrypt    password,      salt-rounds 10
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
     try {
         const newUser = await prisma.user.create({ // user.create då modellen i prisma heter så 

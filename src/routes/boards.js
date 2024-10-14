@@ -5,9 +5,9 @@ const authorize = require('../middleware/auth')
 const prisma = new PrismaClient() 
 
 
-// Denna endpoint returnerar BOARDS
+// Denna endpoint returnerar BOARDS samt dess NOTES
 
-// Get the boards connected to the user
+// Get boards
 router.get('/', authorize, async (req,res) => {
 
     try{
@@ -21,7 +21,7 @@ router.get('/', authorize, async (req,res) => {
     }   
 })
 
-// POST a new board
+// POST board
 router.post('/', authorize, async (req, res) => {
     const { title } = req.body; // Get the title from request body
 
@@ -29,7 +29,7 @@ router.post('/', authorize, async (req, res) => {
         const newBoard = await prisma.boards.create({
             data: {
                 title: title,
-                authorId: req.userData.sub // Associate the board with authenticated user
+                authorId: req.userData.sub 
             }
         });
 
@@ -41,19 +41,18 @@ router.post('/', authorize, async (req, res) => {
     }
 });
 
-// GET notes for a specific board
+// GET notes för en specifik board
 router.get('/:boardId/notes', authorize, async (req, res) => {
-    const boardId = req.params.boardId; // Get the boardId from the request parameters
+    const boardId = req.params.boardId; 
 
     try {
         console.log(`Fetching notes for board ${boardId}`);
-        
-        // Check if the board exists and belongs to the user
+      
         const board = await prisma.boards.findUnique({
             where: { id: boardId }
         });
        
-        // Fetch notes associated with specific board
+        // Fetch notes för en viss board
         const notes = await prisma.notes.findMany({
             where: {
                 boardId: boardId 
@@ -72,19 +71,18 @@ router.get('/:boardId/notes', authorize, async (req, res) => {
 })
 
 
-// POST new note for a specific board
+// POST en ny note för en specifik board
 router.post('/:boardId/notes', authorize, async (req, res) => {
-    const { boardId } = req.params; // Get the board ID from the URL
-    const { note, color, positionT, positionL } = req.body; // Get the note content from the request body
+    const { boardId } = req.params; 
+    const { note, color, positionT, positionL } = req.body; 
 
     try {
-        // Check if the board exists and if the user has access to it
         const board = await prisma.boards.findUnique({
             where: { id: boardId },
         });
 
         if (!board) {
-            return res.status(404).send({ msg: "Board not found or you don't have access to it" });
+            return res.status(404).send({ msg: "Board not found" });
         }
 
         const newNote = await prisma.notes.create({
@@ -106,7 +104,7 @@ router.post('/:boardId/notes', authorize, async (req, res) => {
     }
 });
 
-
+// PUT note när modifierad 
 router.put('/:boardId/:noteId', authorize, async  (req, res) =>{
     const { boardId } = req.params;
     const { noteId } = req.params;
@@ -118,7 +116,7 @@ router.put('/:boardId/:noteId', authorize, async  (req, res) =>{
         });
 
         if (!board) {
-            return res.status(404).send({ msg: "Board not found or you don't have access to it" });
+            return res.status(404).send({ msg: "Board not found" });
         }
 
         const updateNote = await prisma.notes.update({
@@ -141,9 +139,8 @@ router.put('/:boardId/:noteId', authorize, async  (req, res) =>{
     }
  })
 
- router.delete('/:boardId/:noteId', authorize, async  (req, res) =>{
-    const { boardId, noteId } = req.params;
-    //const { noteId } = req.params.noteId
+router.delete('/:boardId/:noteId', authorize, async  (req, res) =>{
+   const { boardId, noteId } = req.params; 
 
     try {
         const board = await prisma.boards.findUnique({
@@ -151,7 +148,7 @@ router.put('/:boardId/:noteId', authorize, async  (req, res) =>{
         });
 
         if (!board) {
-            return res.status(404).send({ msg: "Board not found or you don't have access to it" });
+            return res.status(404).send({ msg: "Board not found" });
         }
 
         const deleteNote = await prisma.notes.delete({
