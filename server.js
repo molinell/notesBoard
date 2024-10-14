@@ -34,10 +34,18 @@ wss.on('connection', (ws, req) => {
         ws.close();
     }
 
-    const boardIdString = urlParams.get('boardId')
-    const boardId = boardIdString.split("-")[1]
+    const boardIdParam = urlParams.get('boardId')
+    const boardIdString = boardIdParam.split("-")[1]
+    const boardId = Number.parseInt(boardIdString)
 
-    console.log("On board " + boardId)
+    //checks that boardId is a valid number
+    if(!Number.isInteger(boardId)){
+        ws.send(JSON.stringify({
+            status: 1,
+            msg: 'ERROR: Invalid board id'
+        }));
+        ws.close();
+    }
 
     if (clients[boardId] == null) {
         clients[boardId] = new Set()
