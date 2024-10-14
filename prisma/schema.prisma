@@ -14,7 +14,7 @@ model Notes {
   note      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  boardId   String   @db.ObjectId // Add the boardId field to establish the relation with Boards
+  boardId   String   @db.ObjectId 
   board     Boards   @relation(fields: [boardId], references: [id])
   color     String
   positionT String

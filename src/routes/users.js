@@ -7,6 +7,7 @@ const prisma = new PrismaClient() //instansierar objekt med new
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+// Har använt lektionsexemplen som hjälp i att koda dessa metoder
 
 // GET för att få min egen användares data (enligt jwt)
 router.get('/profile', authorize, async (req,res) => {
