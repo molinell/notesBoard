@@ -9,11 +9,12 @@ const prisma = new PrismaClient()
 
 // Get boards
 router.get('/', authorize, async (req,res) => {
-
+// Har använt lektionsexemplen som hjälp i att få notes och boards, Code challenge för put
+// Alla användare kommer åt alla boards
     try{
         console.log("boards / GET")
         const boards = await prisma.boards.findMany()
-        res.status(200).send({msg: `Boards for user ${req.userData.name} ` , boards: boards})
+        res.status(200).send({msg: `Boards: ` , boards: boards})
 
     } catch (error) {
         console.log(error)
@@ -21,9 +22,9 @@ router.get('/', authorize, async (req,res) => {
     }   
 })
 
-// POST board
+// POST board (Kan ej göras i frontend, mest för min skull i boards.http)
 router.post('/', authorize, async (req, res) => {
-    const { title } = req.body; // Get the title from request body
+    const { title } = req.body; 
 
     try {
         const newBoard = await prisma.boards.create({
@@ -33,7 +34,7 @@ router.post('/', authorize, async (req, res) => {
             }
         });
 
-        res.status(201).send({ msg: "New board created", board: newBoard });
+        res.status(201).send({ msg: "New board created: ", board: newBoard });
 
     } catch (error) {
         console.log(error.message);
@@ -47,7 +48,8 @@ router.get('/:boardId/notes', authorize, async (req, res) => {
 
     try {
         console.log(`Fetching notes for board ${boardId}`);
-      
+        
+        // Behöver id:n från boarden för att veta vilka notes som är kopplade
         const board = await prisma.boards.findUnique({
             where: { id: boardId }
         });
@@ -89,7 +91,7 @@ router.post('/:boardId/notes', authorize, async (req, res) => {
             data: {
                 note: note,
                 authorId: req.userData.sub, // JWT ID
-                boardId: boardId, // Associate the note with the board
+                boardId: boardId,
                 color: color,
                 positionT: positionT, 
                 positionL: positionL,
@@ -97,7 +99,7 @@ router.post('/:boardId/notes', authorize, async (req, res) => {
             },
         });
 
-        res.status(201).send({ msg: "New note created", note: newNote });
+        res.status(201).send({ msg: "New note created: ", note: newNote });
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ msg: "Error creating note" });
@@ -132,7 +134,7 @@ router.put('/:boardId/:noteId', authorize, async  (req, res) =>{
             },
         });
 
-        res.status(201).send({ msg: "Note updated", note: updateNote });
+        res.status(201).send({ msg: "Note updated: ", note: updateNote });
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ msg: "Error updatning note" });
@@ -151,13 +153,14 @@ router.delete('/:boardId/:noteId', authorize, async  (req, res) =>{
             return res.status(404).send({ msg: "Board not found" });
         }
 
+        // letar upp id:n för noten som ska raderas 
         const deleteNote = await prisma.notes.delete({
             where: {
                 id: noteId,
             },
         });
 
-        res.status(200).send({ msg: "Note deleted", note: deleteNote });
+        res.status(200).send({ msg: "Note deleted: ", note: deleteNote });
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ msg: "Error deleting note" });

@@ -1,6 +1,6 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
-
+// Har använt lektionsexemplet som authorization metoden. 
 module.exports = (req, res, next) =>{
     try{
         const authHeader = req.headers['authorization']
