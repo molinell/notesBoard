@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="./style.css">
     <title>Notes</title>
 </head>
+
 <body>
     <div id="notification" class="hidden">Registration Successful!</div>
 
@@ -34,13 +36,13 @@
         import { registerUser, logIn, showNotification } from './js/users.js'
 
         document.addEventListener('click', (evt) => {
-            if(evt.target.id == 'button-login') {
+            if (evt.target.id == 'button-login') {
                 const user = document.querySelector('#username').value;
                 const pass = document.querySelector('#password').value;
                 logIn(user, pass);
             }
 
-            if(evt.target.id == 'button-register') {
+            if (evt.target.id == 'button-register') {
                 const username = document.querySelector('#username-reg').value;
                 const password = document.querySelector('#password-reg').value;
                 const email = document.querySelector('#email-reg').value;
@@ -51,4 +53,5 @@
     </script>
 
 </body>
+
 </html>
