@@ -4,6 +4,8 @@ const API_URL = "https://notes-board.azurewebsites.net";
 async function registerUser(username, password, email) {
     // token is created with login
     // All new users role is set to deafult automatically
+
+    // RegisterUser function is based off the lecture example
     try {
         const resp = await fetch(`${API_URL}/users/register`, {
             method: "POST",
@@ -31,12 +33,14 @@ function showNotification(message) {
     notification.classList.add('show');
 
     // Automatically hide the notification after 4 seconds
+    // src: https://www.w3schools.com/jsref/met_win_settimeout.asp
     setTimeout(() => {
         notification.classList.remove('show');
     }, 4000);
 }
 
 async function logIn(user, pass) {
+    // LogIn function is based off the lecture example
     console.log("you are " + user + " with a pass: " + pass)
     // POST username and password 
     try {
@@ -66,7 +70,5 @@ async function logIn(user, pass) {
         console.error("Error occurred during login:", error);
     }
 }
-
-
 
 export { registerUser, logIn, showNotification }

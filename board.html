@@ -36,6 +36,7 @@
         const token = localStorage.getItem('jwt_token');
 
         // Fetch the boards right away when the page loads
+        // src for loading function rigt away: https://www.tutorialspoint.com/how-do-i-call-a-javascript-function-on-page-load
         document.addEventListener('DOMContentLoaded', () => {
             fetchBoards(token);  
       

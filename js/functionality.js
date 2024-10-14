@@ -58,10 +58,10 @@ function dragElement(evt, elem) {
         document.onmousemove = null;
 
         //Only log event if an actual change has occurred
-        if(elem.style.top != ogTop && elem.style.left != ogLeft){
+        if (elem.style.top != ogTop && elem.style.left != ogLeft) {
             elem.setAttribute("data-modified", "true")
             document.dispatchEvent(boardChange)
-        } 
+        }
     }
 }
 
@@ -79,21 +79,21 @@ function editNote(elem) {
             value: elem.innerText
         }));
     });
-    
-    
+
+
     elem.addEventListener('blur', () => {
         //Only log event if an actual change has occurred
-        if(elem.innerText != ogText){
+        if (elem.innerText != ogText) {
             elem.parentElement.setAttribute("data-modified", "true")
             document.dispatchEvent(boardChange)
-        } 
+        }
     })
 }
 
 function addNote() {
     const uniqueId = `note${NoteCount.add()}-${Date.now()}`
-    
-        document.querySelector(".note-container").innerHTML += `
+
+    document.querySelector(".note-container").innerHTML += `
         <div id="${uniqueId}" class="notes">
                  <div id=button-wrap>
                     <button type="button" class="color" data-color="#b4d9ff">🧊</button>
@@ -126,12 +126,13 @@ function addNote() {
 
 function displayNotes(notes) {
     NoteCount.reset()
+
     // Display in separate divs 
     const notesContainer = document.querySelector('.note-container');
     notesContainer.innerHTML = '';
 
     notes.forEach(note => {
-        
+
         notesContainer.innerHTML += `
         
             <div id="note${NoteCount.add()}" class="notes">
@@ -146,7 +147,7 @@ function displayNotes(notes) {
             </div>`
 
         //
-       const noteElement = document.querySelector(`#note${NoteCount.COUNT}`)
+        const noteElement = document.querySelector(`#note${NoteCount.COUNT}`)
 
         noteElement.style.top = note.positionT
         noteElement.style.left = note.positionL
@@ -161,8 +162,10 @@ function displayNotes(notes) {
 }
 
 async function fetchBoards(token) {
+    // The fetchBoards + displayBoards structure (as in having two functions for it, the fetch boards and then diplaying them when the token is valid) 
+    // was found on chatGPT. The error messages in the following fetch and display functions are based of this one
     console.log(`Fetching boards for user wiht token ${token}`)
-    const boardsResp = await fetch(`${API_URL}/boards`, { 
+    const boardsResp = await fetch(`${API_URL}/boards`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -173,10 +176,10 @@ async function fetchBoards(token) {
     const boardsData = await boardsResp.json();
     console.log("Fetched boards:", boardsData);
 
-    // Check if the response contains the notes
+    // Check if the response contains the boards
     if (boardsData && boardsData.boards) {
         console.log("User's boards:", boardsData.boards);
-        displayBoards(boardsData.boards); // Call function to display notes
+        displayBoards(boardsData.boards); // Call function to display boards
     } else {
         console.log("You have 0 boards, create one!");
         displayNoBoardsMessage()
@@ -189,8 +192,8 @@ function displayBoards(boards) {
     let count = 0;
     boards.forEach(board => {
         const boardElement = document.createElement("div");
-    
-    boardscontainer.innerHTML += `
+
+        boardscontainer.innerHTML += `
         <div id="board-${count++}" class="boards" data-id="${board.id}">
        ${board.title}
         </div>`
@@ -205,6 +208,7 @@ function displayNoBoardsMessage() {
 
 // Function to fetch and display notes for a specific board
 async function fetchNotesForBoard(boardId) {
+    // Based off fetchBoards
     try {
         const token = localStorage.getItem('jwt_token');
 
@@ -231,12 +235,12 @@ async function fetchNotesForBoard(boardId) {
     }
 }
 
-function changeColor(button){
+function changeColor(button) {
     const note = button.parentElement.parentElement
 
     const color = button.getAttribute('data-color');
-    note.style.background = color; 
- 
+    note.style.background = color;
+
     note.setAttribute("data-modified", "true");
 
     SOCKET.send(JSON.stringify({
@@ -244,20 +248,21 @@ function changeColor(button){
         elemId: note.id,
         color: color
     }))
-  
+
     document.dispatchEvent(boardChange)
 }
 
-function colorBoard(board){
+function colorBoard(board) {
     document.querySelectorAll('.boards').forEach(board => {
-        board.style.color = ''; 
+        board.style.color = '';
     });
     const colors = ["#42f593", "#f542ad", "#42e3f5", "#f58a42", "#ef74fc", "#d9d36c"];
 
     board.style.color = colors[Math.floor(Math.random() * colors.length)];
 }
+
 async function saveBoard() {
-    
+
     document.querySelector('#save-cont').innerHTML = "<p>saving...</p>"
     const noteContainer = document.querySelector('.note-container')
     const token = localStorage.getItem('jwt_token')
@@ -268,8 +273,8 @@ async function saveBoard() {
         //Only save those with modifications / new
         if (child.getAttribute('data-modified') || child.getAttribute("data-new")) {
             try {
-                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}/${ (!child.getAttribute('data-new')) ? child.getAttribute('data-id') : "notes" }` /* /noteID if not new, else /notes */
-                const resp = await fetch( FETCH_URL , {
+                const FETCH_URL = `${API_URL}/boards/${document.querySelector("#" + localStorage.getItem('board_id')).getAttribute("data-id")}/${(!child.getAttribute('data-new')) ? child.getAttribute('data-id') : "notes"}` /* /noteID if not new, else /notes */
+                const resp = await fetch(FETCH_URL, {
                     method: ((child.getAttribute('data-new')) ? "POST" : "PUT"),
                     headers: {
                         "Authorization": `Bearer ${token}`,
@@ -283,7 +288,7 @@ async function saveBoard() {
                     })
                 })
 
-                if(!resp.ok){
+                if (!resp.ok) {
                     console.error("Fetch error: " + resp.status + resp.statusText)
                     saveSuccess = false
                     document.querySelector('#save-cont').innerHTML = "<p>Saving failed</p>"
@@ -294,7 +299,7 @@ async function saveBoard() {
                 } else {
                     console.log("Saving successfull for " + child.id)
                     const respData = await resp.json();
-                    if(child.getAttribute("data-new"))child.setAttribute("data-id", respData.note.id) 
+                    if (child.getAttribute("data-new")) child.setAttribute("data-id", respData.note.id)
 
                     savedNotes[child.id] = respData.note.id
 
@@ -314,22 +319,22 @@ async function saveBoard() {
     }
 
     //Only send if any notes where successfully saved
-    if(Object.keys(savedNotes).length > 0){
+    if (Object.keys(savedNotes).length > 0) {
         SOCKET.send(JSON.stringify({
             event: Events.SAVE,
             savedNotes: savedNotes
         }))
     }
-    
 
-    if(saveSuccess){
+
+    if (saveSuccess) {
         document.querySelector('#save-cont').innerHTML = "<p>All changes saved!</p>"
         setTimeout(() => {
             document.querySelector('#save-cont').innerHTML = ""
         }, 5000)
     }
-    
-    
+
+
 }
 
 async function removeNote(elem) {
@@ -342,30 +347,31 @@ async function removeNote(elem) {
     const noteId = note.getAttribute("data-id");
     note.remove()
 
-    if(note.getAttribute("data-new")) return //early return if note is unsaved
+    if (note.getAttribute("data-new")) return //early return if note is unsaved
 
     console.log("Remove note: " + noteId);
 
     const token = localStorage.getItem('jwt_token')
 
-    try{
-        const FETCH_URL = `${API_URL}/boards/${document.querySelector("#"+localStorage.getItem('board_id')).getAttribute("data-id")}${noteId ? `/${noteId}` : ''} ` 
-        console.log("Urlen för delete: "+FETCH_URL)
-        const resp = await fetch( FETCH_URL , {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }})
-    } catch(error){
+    try {
+        const FETCH_URL = `${API_URL}/boards/${document.querySelector("#" + localStorage.getItem('board_id')).getAttribute("data-id")}${noteId ? `/${noteId}` : ''} `
+        console.log("Urlen för delete: " + FETCH_URL)
+        const resp = await fetch(FETCH_URL, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        })
+    } catch (error) {
         console.error("Error occurred during delete", error);
     }
 }
 
 
 function connectWS() {
-    if(SOCKET != null) SOCKET.close()
+    if (SOCKET != null) SOCKET.close()
     SOCKET = webSocket()
 }
 
-export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor, colorBoard}
+export { dragElement, addNote, editNote, removeNote, connectWS, fetchNotesForBoard, displayNotes, saveBoard, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor, colorBoard }

@@ -169,7 +169,7 @@ body {
   text-align: center;
   /*Centrerar all text inne i diven*/
 }
-
+/* src: chatGPT for this input[] css */
 input[type="text"],
 input[type="password"] {
   width: 100%;
@@ -206,7 +206,6 @@ input[type="password"] {
   left: 50%;
   transform: translateX(-50%);
   background-color: #28a745;
-  /* Success green color */
   color: white;
   padding: 10px 20px;
   font-size: 16px;
