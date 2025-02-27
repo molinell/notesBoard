@@ -1,0 +1,223 @@
+* {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  background-color: rgba(12, 9, 9, 0.944);
+  color: #fff;
+}
+
+/* STYLE for NOTES in board.html*/
+
+.notes {
+  position: absolute;
+  z-index: 9;
+  text-align: center;
+  cursor: move;
+  width: 250px;
+  height: 250px;
+  overflow: hidden;
+  padding-top: 20px;
+  color: black;
+}
+
+.note-content {
+  position: relative;
+  height: 83%;
+  width: 95%;
+  margin-left: 6.25px;
+  padding-top: 10px;
+  overflow: scroll;
+  word-wrap: break-word;
+  cursor: text;
+  background: inherit;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+#notes-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#button-wrap {
+  display: flex;
+  justify-content: flex-end;
+  width: 50%;
+  margin-top: -33px;
+  margin-left: 20px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+
+}
+
+.color {
+  border: none;
+  background: none;
+  cursor: pointer;
+  right: 5px;
+  top: 5px;
+  z-index: 1;
+  font-size: 20px;
+
+}
+
+.rm-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  right: 5px;
+  position: absolute;
+  z-index: 1;
+  font-size: 20px;
+}
+
+#notes {
+  padding-left: 5px;
+}
+
+.color-btn {
+  padding: 2px 6px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+/* END of STYLE for NOTES in board.html*/
+
+/* STYLE for BOARDS in board.html*/
+
+#board-wrap {
+  display: flex;
+  width: 650px;
+  border: 1px solid #ccc;
+}
+
+#board {
+  width: 70px;
+  padding: 25px;
+  border-right: 1px solid #ccc;
+}
+
+#boards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 20px;
+  padding: 10px;
+  flex-grow: 1;
+}
+
+.boards {
+  text-align: center;
+  border: none;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 90px;
+}
+
+#add-btn,
+#save-btn {
+  height: 72px;
+  border-radius: 0px;
+  border: 2%;
+  border-color: black;
+  margin-left: 20px;
+}
+
+#conn_status {
+  position: absolute;
+  top: 97px
+}
+
+/* END of STYLE for BOARDS in board.html*/
+
+/* STYLE for index.html*/
+
+#con {
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #027587;
+  width: 500px;
+  display: flex;
+  border-radius: 10px;
+}
+
+#innerCon1 {
+  width: 40%;
+  background-color: #1694a7;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.321);
+  text-align: center;
+}
+
+#innerCon2 {
+  width: 40%;
+  background-color: #1694a7;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.321);
+  text-align: center;
+  /*Centrerar all text inne i diven*/
+}
+/* src: chatGPT for this input[] css */
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin: 4px 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+#button-register {
+  width: 100%;
+  padding: 10px;
+  margin: 4px 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border-style: none;
+}
+
+#button-login {
+  width: 100%;
+  padding: 10px;
+  margin: 4px 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border-style: none;
+
+}
+
+#notification {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none;
+}
+
+#notification.show {
+  display: block;
+  animation: fadeIn 0.5s, fadeOut 0.5s 3.5s;
+}
+
+/* END of STYLE for index.html*/

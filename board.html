@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!-- Works with ws-node in this repo -->
+
+<body> 
+    <div id="err" style="color: red;"></div>
+   
+    <div id="board-wrap">
+        <div id="board">Boards:</div>
+        <div id="boards-container"></div> 
+    </div>
+    <button type="button" id="add-btn" style="visibility: hidden;">+ new note</button>
+    <div id="save-cont"></div>
+    <div id="conn_status"></div>
+
+    <div class="note-container"></div>
+        
+    
+
+    <script type="module">
+        import { dragElement, addNote, editNote, removeNote, connectWS, saveBoard, fetchNotesForBoard, 
+            displayNotes, fetchBoards, displayBoards, displayNoBoardsMessage, changeColor, colorBoard } from './js/functionality.js'
+
+        //enklast såhär, att göra till global så att man kan endast dragga själva noten
+        //window.dragElement = dragElement 
+        
+        const token = localStorage.getItem('jwt_token');
+
+        // Fetch the boards right away when the page loads
+        // src for loading function rigt away: https://www.tutorialspoint.com/how-do-i-call-a-javascript-function-on-page-load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchBoards(token);  
+      
+        });
+        document.addEventListener('dblclick', (evt) => {
+            if(evt.target.classList == 'note-content') editNote(evt.target)
+        })
+
+        document.addEventListener('click', (evt) => {
+            if(evt.target.classList == 'rm-btn') removeNote(evt.target)
+            if(evt.target.classList == 'color') changeColor(evt.target)
+            if(evt.target.id == 'reconn-btn') connectWS()
+            if(evt.target.id == 'add-btn') addNote()
+            if(evt.target.id == 'save-btn') saveBoard()
+            if(evt.target.classList == 'boards') {
+                
+                if(evt.target.getAttribute("data-id")){ 
+                    fetchNotesForBoard(evt.target.getAttribute("data-id"))
+                    localStorage.setItem('board_id', evt.target.id)
+                    colorBoard(evt.target)
+                }
+            }
+        })
+
+        document.addEventListener('boardchange', () => {
+            document.querySelector('#save-cont').innerHTML = `<button type="button" id="save-btn">💾 save changes</button>`
+        })
+
+        document.addEventListener('mousedown', (evt) => {
+            if(evt.target.classList == 'notes') dragElement(evt, evt.target)
+        })
+    </script>
+   
+
+</body>
+
+</html>

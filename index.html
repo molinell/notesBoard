@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <title>Notes</title>
+</head>
+
+<body>
+    <div id="notification" class="hidden">Registration Successful!</div>
+
+
+    <div id=con>
+        <div id="innerCon1">
+            <h3 id="title"> LOG IN </h3>
+            <input id="username" type="text" placeholder="Email"><br>
+            <input id="password" type="password" placeholder="Password"><br>
+            <input id="button-login" type="button" value="Log in"><br>
+        </div>
+        <div id="innerCon2">
+            <h3 id="title"> REGISTER </h3>
+            <input id="username-reg" type="text" placeholder="Username"><br>
+            <input id="email-reg" type="text" placeholder="Email"><br>
+            <input id="password-reg" type="password" placeholder="Password"><br>
+            <input id="button-register" type="button" value="Register"><br>
+        </div>
+    </div>
+
+    <script type="module"> 
+        import { registerUser, logIn, showNotification } from './js/users.js'
+
+        document.addEventListener('click', (evt) => {
+            if (evt.target.id == 'button-login') {
+                const user = document.querySelector('#username').value;
+                const pass = document.querySelector('#password').value;
+                logIn(user, pass);
+            }
+
+            if (evt.target.id == 'button-register') {
+                const username = document.querySelector('#username-reg').value;
+                const password = document.querySelector('#password-reg').value;
+                const email = document.querySelector('#email-reg').value;
+                registerUser(username, password, email);
+            }
+        })
+
+    </script>
+
+</body>
+
+</html>
