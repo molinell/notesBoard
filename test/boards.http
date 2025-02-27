@@ -1,0 +1,53 @@
+@apiURL=http://localhost:8088
+@token={{$dotenv TEMP_TOKEN}}
+
+GET {{apiURL}}/boards
+Authorization: Bearer {{token}}
+
+###
+
+POST {{apiURL}}/boards
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Öl"
+}
+###
+POST {{apiURL}}/boards/67078d1ac322546d976359d4/notes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "note" : "Gränges är bäst x 3",
+    "color": "ff0000",
+    "positionT" :  "10px",
+    "positionL" : "20px"
+}
+
+###
+GET {{apiURL}}/boards/67050916700978f4b691606e/notes
+Authorization: Bearer {{token}}
+
+###
+
+PUT {{apiURL}}/boards/67050916700978f4b691606e/67081021665437b2dedabc4e
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+{
+    "note": "vain tröja??",
+    "color": "#ADD8E6",
+    "positionT": "30px",
+    "positionL": "80px"
+}
+
+###
+
+DELETE {{apiURL}}/boards/67050916700978f4b691606e/67078e91c322546d976359d5
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+

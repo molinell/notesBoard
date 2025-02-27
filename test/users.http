@@ -1,0 +1,36 @@
+
+#@apiURL=http://localhost:8088
+
+@apiURL={{$dotenv API_URL}}
+@token={{$dotenv TEMP_TOKEN}}
+
+
+###
+POST {{apiURL}}/users/login
+Content-Type: application/json
+
+{ 
+    "email": "vanHerpen@site.com",
+    "password": "Password12388"
+}
+
+###
+POST {{apiURL}}/users/register
+Content-Type: application/json
+
+{
+    "name": "Iris",
+    "email": "vanHerpen@hotmail.com",
+    "role": "user",
+    "password": "Password12388"
+}
+
+###
+GET {{apiURL}}/users/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{ 
+    "email": "mina@hotmail.com",
+    "password": "123"
+}

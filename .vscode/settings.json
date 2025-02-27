@@ -1,3 +1,14 @@
 {
+<<<<<<< HEAD
     "liveServer.settings.port": 5503
 }
+=======
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/1403363a-bd36-4502-bd53-92a4615bfa7a/resourceGroups/WoM/providers/Microsoft.Web/sites/notey",
+    "appService.deploySubpath": ".",
+    "liveServer.settings.port": 5501
+}
+>>>>>>> restapi/main
