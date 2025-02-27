@@ -1,8 +1,5 @@
 {
-<<<<<<< HEAD
-    "liveServer.settings.port": 5503
-}
-=======
+
     "appService.zipIgnorePattern": [
         "node_modules{,/**}",
         ".vscode{,/**}"
@@ -11,4 +8,3 @@
     "appService.deploySubpath": ".",
     "liveServer.settings.port": 5501
 }
->>>>>>> restapi/main

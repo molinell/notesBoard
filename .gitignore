@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 .DS_Store
 
-=======
->>>>>>> restapi/main
 # Logs
 logs
 *.log
@@ -132,8 +129,8 @@ dist
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
-<<<<<<< HEAD
+
 .pnp.*
 =======
 .pnp.*
->>>>>>> restapi/main
+
